@@ -293,6 +293,12 @@ td.actions{white-space:nowrap;text-align:right;width:1%}
 .perf-top b{font-weight:600;font-size:15px}
 .perf-val{color:var(--muted);font-size:14px}
 .perf-val strong{color:var(--fg);font-size:20px;font-weight:700}
+.perf-input{width:64px;border:1px solid var(--line-strong);background:var(--surface);color:var(--fg);border-radius:6px;padding:3px 6px;font:inherit;font-size:14px;text-align:right}
+.inv-list{display:grid}
+.inv-row{display:grid;grid-template-columns:minmax(110px,1.3fr) minmax(60px,1.6fr) 96px;align-items:center;gap:14px;background:transparent;color:var(--fg);border:0;border-bottom:1px solid var(--line);padding:9px 4px;text-align:left;cursor:pointer;font:inherit}
+.inv-row:last-child{border-bottom:0}.inv-row:hover{background:var(--surface-2)}
+.inv-label{font-weight:600;font-size:14px;min-width:0}.inv-label small{display:block;color:var(--muted);font-size:12px;font-weight:400;margin-top:2px}
+.inv-amount{text-align:right;font-weight:700;font-size:15px;white-space:nowrap}.inv-amount small{display:block;color:var(--muted);font-size:12px;font-weight:400}
 .perf-bar{position:relative;height:8px;border-radius:4px;background:var(--neutral-soft)}
 .perf-fill{height:100%;border-radius:4px;background:var(--line-strong)}
 .perf-fill.good{background:var(--good)} .perf-fill.warn{background:var(--warn)} .perf-fill.crit{background:var(--crit)}
@@ -883,7 +889,7 @@ const S = {
   view: 'dashboard', adminTab: 'upload', recSheet: 'delivered', recQuery: '', recPage: 1,
   pending: null, previewSheet: null, uploadError: '',
   dashTab: 'overview', dashQuery: {}, menuOpen: false, confirm: null, signedOut: false,
-  rank: { roi:'high', util:'high' }, rankMeasure: 'money', listCtx: null, loadedAt: new Date(), growthMode: 'count', vendorStatus: '', vendorOpen: null, unitFilter: {},
+  rank: { roi:'high', util:'high' }, rankMeasure: 'money', investBy: 'unit', perfEdit: false, listCtx: null, loadedAt: new Date(), growthMode: 'count', vendorStatus: '', vendorOpen: null, unitFilter: {},
 };
 function emptyData(){ return Object.fromEntries(SCHEMA.map(s => [s.key, []])); }
 if (LOAD_SAMPLE_ON_START){ S.data = sampleData(); S.source = 'sample'; }
@@ -1507,15 +1513,18 @@ function perfPanel(){
     { l:'Utilization rate', v:avg(D.utilization.map(utilRate)), t:T.util, note:`Average across ${D.utilization.length} tracked use cases` },
     { l:'Delivery rate', v: committed ? D.delivered.length / committed * 100 : NaN, t:T.delivery, note:`Delivered ÷ delivered and ongoing (${D.delivered.length} of ${committed})` },
   ];
-  return panel('Performance vs target', 'The marker on each bar is the target. Targets are set in the Admin console.', `<div class="perf">${rows.map(perfRow).join('')}</div>`);
+  rows[0].k = 'roi'; rows[1].k = 'util'; rows[2].k = 'delivery';
+  const edit = !!S.perfEdit;
+  const btns = edit ? `<div class="g-controls"><button class="btn sm" data-act="perf-reset">Reset</button><button class="btn sm primary" data-act="perf-done">Done</button></div>` : `<button class="btn sm" data-act="perf-edit">Edit targets</button>`;
+  return `<section class="panel" id="perf-panel"><div class="panel-head"><div><h2>Performance vs target</h2><p class="sub">${edit ? 'Type a new target for each measure, then select Done.' : 'The marker on each bar is the target. Select Edit targets to change them.'}</p></div>${btns}</div><div class="perf">${rows.map(r => perfRow(r, edit)).join('')}</div></section>`;
 }
-function perfRow(r){
+function perfRow(r, edit){
   const has = !isNaN(r.v);
   const tn = !has ? 'none' : r.v >= r.t ? 'good' : r.v >= r.t * 0.75 ? 'warn' : 'crit';
   const max = Math.max(100, r.t, has ? r.v : 0);
   const status = !has ? 'No data yet' : r.v >= r.t ? `On target, +${(r.v - r.t).toFixed(1)} pts` : `${(r.t - r.v).toFixed(1)} pts below target`;
   return `<div class="perf-row"><span class="dot ${tn}"></span><div class="perf-main">
-    <div class="perf-top"><b>${esc(r.l)}</b><span class="perf-val num"><strong>${has ? fmtPct1(r.v) : '—'}</strong> / ${r.t}%</span></div>
+    <div class="perf-top"><b>${esc(r.l)}</b><span class="perf-val num"><strong>${has ? fmtPct1(r.v) : '—'}</strong> / ${edit ? `<input class="perf-input" type="number" min="0" max="1000" step="1" data-target="${r.k}" value="${r.t}" aria-label="${esc(r.l)} target (%)">` : r.t}%</span></div>
     <div class="perf-bar"><div class="perf-fill ${tn}" style="width:${has ? Math.min(100, r.v / max * 100) : 0}%"></div><div class="perf-target" style="left:${r.t / max * 100}%"></div></div>
     <div class="perf-meta"><span>${esc(r.note)}</span><span class="t-${tn}">${status}</span></div></div></div>`;
 }
@@ -1525,7 +1534,10 @@ function dashOverview(){
   const total = del.length + ong.length + inp.length + ide.length;
   const delCost = sum(del,'Cost (OMR)'), ongCost = sum(ong,'Cost (OMR)'), invest = delCost + ongCost;
   const cancelled = D.ongoing.filter(r => stageGroup(r) === 'cancelled').length;
-  const activeVendors = vendorGroups().filter(g => g.rows.some(vendorIsActive)).length;
+  const vgs = vendorGroups(), vNames = new Set(vgs.map(g => nk(g.name)));
+  const extraStartups = new Set(D.startups.map(s => nk(s['Startup Name'])).filter(k => k && !vNames.has(k))).size;
+  const startupCount = vgs.filter(g => /startup/i.test(g.type)).length + extraStartups;
+  const activeVendors = vNames.size + extraStartups;
   const openDec = D.decision.filter(d => !/decided|closed|done/i.test(d.Status||''));
   const kp = kpis([
     { label:'Total use cases', value:fmtInt(total), sub: cancelled ? `${cancelled} cancelled not counted` : 'All stages', tab:'delivered' },
@@ -1535,7 +1547,7 @@ function dashOverview(){
   ]) + kpis([
     { label:'Investment', omr:true, value:fmtOMR(invest), sub:'Delivered and ongoing use cases', tab:'delivered' },
     { label:'Decisions waiting', value:fmtInt(openDec.length), sub: openDec.length ? `${openDec.filter(d=>/high/i.test(d.Priority||'')).length} high priority` : 'Nothing waiting', tab:'decision' },
-    { label:'Active vendors', value:fmtInt(activeVendors), sub:`${D.startups.filter(s=>/active/i.test(s['Contract Status']||'')).length} active startups`, tab:'vendors' },
+    { label:'Active vendors', value:fmtInt(activeVendors), sub:`${activeVendors - startupCount} companies · ${startupCount} startups`, tab:'vendors' },
     { label:'Live AI agents', value:fmtInt(D.agents.filter(a=>/live/i.test(a.Status||'')).length), sub:`${D.products.filter(p=>/live|active/i.test(p.Status||'')).length} AI products live`, tab:'agents' },
   ]);
 
@@ -1560,15 +1572,13 @@ function dashOverview(){
   return `${kp}
   <div class="grid2">${panel('Use cases by unit','Delivered use cases by business unit. Select a bar to list them.', unitChart)}${panel('Y2Y comparison','Delivered, ongoing and ideation by year.', yoy)}</div>
   ${annualFinancePanel()}
-  ${growthPanel()}
-  ${unitValuePanel()}
-  ${investMatrix()}
   <div class="grid2">
-    ${attentionPanel(items)}
+    ${investPanel()}
+    ${perfPanel()}
     ${rankPanel('roi')}
     ${rankPanel('util')}
-    ${perfPanel()}
   </div>
+  ${attentionPanel(items)}
   ${panel('Decisions awaiting leadership', openDec.length ? 'Sorted by due date.' : '', decList + (openDec.length ? `<button class="btn sm" data-act="dash-tab" data-k="decision" style="justify-self:start">View all decisions</button>` : ''))}`;
 }
 
@@ -1707,6 +1717,20 @@ function investMatrix(){
     const value = g.delivered + g.ongoing;
     return `<button class="exec-row" data-act="segment" data-u="" data-t="${esc(g.key)}" data-ul="All units" data-tl="${esc(g.label)}"><span class="exec-label">${esc(g.label)}<small>${pl(g.n, 'use case')}</small></span><span class="exec-track"><i style="width:${value/max*100}%"></i></span><span class="exec-amount">${fmtOMR(value)}<small>${(value/total*100).toFixed(1)}% of investment</small></span></button>`;
   }).join('')}</div>`);
+}
+/* Investment (Delivered + Ongoing cost) by business unit or AI type, in one compact panel. */
+function investPanel(){
+  const by = S.investBy === 'type' ? 'type' : 'unit', rows = investRows();
+  const seg = `<div class="seg sm" role="group" aria-label="Group by"><button data-act="invest-by" data-v="unit" aria-pressed="${by === 'unit'}">By unit</button><button data-act="invest-by" data-v="type" aria-pressed="${by === 'type'}">By AI type</button></div>`;
+  const wrap = body => `<section class="panel" id="invest-panel"><div class="panel-head"><div><h2>Investment by unit and AI type</h2><p class="sub">Delivered and ongoing use cases · OMR. Select a row to list them.</p></div>${seg}</div>${body}</section>`;
+  if (!rows.length) return wrap('<div class="empty">No investment recorded.</div>');
+  const groups = groupInvest(rows, by === 'unit' ? 'Unit' : 'AI Type');
+  const total = groups.reduce((v, g) => v + g.delivered + g.ongoing, 0), max = Math.max(...groups.map(g => g.delivered + g.ongoing), 1);
+  const sav = new Map();
+  if (by === 'unit'){ const idx = unitIndex(); deliveredRoi().forEach(r => { const u = idx.get(nk(r['Use Case'])), v = num(r['Annual Savings (OMR)']); if (u && v > 0) sav.set(groupKey(u), (sav.get(groupKey(u)) || 0) + v); }); }
+  return wrap(`<div class="inv-list">${groups.map(g => { const value = g.delivered + g.ongoing, s = sav.get(g.key);
+    const act = by === 'unit' ? `data-act="open-unit" data-v="${esc(g.label)}"` : `data-act="segment" data-u="" data-t="${esc(g.key)}" data-ul="All units" data-tl="${esc(g.label)}"`;
+    return `<button class="inv-row" ${act}><span class="inv-label">${esc(g.label)}<small>${pl(g.n, 'use case')}${s ? ` · OMR ${fmtShortOMR(s)} savings/yr` : ''}</small></span><span class="exec-track"><i style="width:${value / max * 100}%"></i></span><span class="inv-amount num">${fmtOMR(value)}<small>${total ? (value / total * 100).toFixed(1) : 0}%</small></span></button>`; }).join('')}</div>`);
 }
 function annualFinancePanel(){
   const f = finance(), cost = sum(deliveredRoi(), 'Annual Operating Cost');
@@ -1920,9 +1944,8 @@ function valueByType(){
      <div class="split-rows">${list.map(x => `<div class="split-row vt"><i style="background:${x.c}"></i><span>${esc(x.t)} <span class="sub">· ${pl(x.n, 'use case')}</span></span><b class="num">OMR ${fmtOMR(x.sav)}</b><span class="pct num">${Math.round(x.sav / tot * 100)}%</span></div>`).join('')}</div>`);
 }
 function rankPanel(kind){
-  const D = S.data, T = S.targets, low = S.rank[kind] === 'low', time = kind === 'roi' && S.rankMeasure === 'time';
-  const seg = `<div class="g-controls">${kind === 'roi' ? `<div class="seg sm" role="group" aria-label="Measure"><button data-act="rank-measure" data-v="money" aria-pressed="${!time}">Money</button><button data-act="rank-measure" data-v="time" aria-pressed="${time}">Time</button></div>` : ''}
-    <div class="seg sm" role="group" aria-label="Order"><button data-act="rank" data-k="${kind}" data-v="high" aria-pressed="${!low}">Highest</button><button data-act="rank" data-k="${kind}" data-v="low" aria-pressed="${low}">Lowest</button></div></div>`;
+  const D = S.data, T = S.targets, low = false, time = kind === 'roi' && S.rankMeasure === 'time';
+  const seg = `<div class="g-controls">${kind === 'roi' ? `<div class="seg sm" role="group" aria-label="Measure"><button data-act="rank-measure" data-v="money" aria-pressed="${!time}">Money</button><button data-act="rank-measure" data-v="time" aria-pressed="${time}">Time</button></div>` : ''}</div>`;
   const item = (i, name, right, meta) => `<div class="list-item clickable" data-act="profile" data-v="${esc(name)}" role="button" tabindex="0"><b><span class="rank">${i + 1}</span>${esc(name)}</b>${right}<div class="meta">${meta}</div></div>`;
   let title, sub, body;
   if (kind === 'roi' && !time){
@@ -2271,6 +2294,10 @@ const actions = {
   'list-back'(){ const c = S.listCtx; if (!c) return closeModal(); const set = new Set(c.names.map(nk)); openList(c.title, c.sub, useCases().filter(u => set.has(u.key))); },
   'open-unit'(t){ openUnit(t.dataset.v); },
   segment(t){ openSegment(t.dataset.u, t.dataset.t, t.dataset.ul, t.dataset.tl); },
+  'invest-by'(t){ S.investBy = t.dataset.v; const el = document.getElementById('invest-panel'); if (el) el.outerHTML = investPanel(); },
+  'perf-edit'(){ S.perfEdit = true; const el = document.getElementById('perf-panel'); if (el){ el.outerHTML = perfPanel(); const i = document.querySelector('#perf-panel .perf-input'); if (i) i.focus(); } },
+  'perf-done'(){ S.perfEdit = false; render(); toast('Targets saved'); },
+  'perf-reset'(){ S.targets = { ...DEFAULT_TARGETS }; saveTargets(); const el = document.getElementById('perf-panel'); if (el) el.outerHTML = perfPanel(); },
   'rank-measure'(t){ S.rankMeasure = t.dataset.v; const el = document.getElementById('rank-roi'); if (el) el.outerHTML = rankPanel('roi'); },
   'close-modal'(){ closeModal(); },
   'close-modal-bg'(t, e){ if (e.target === t) closeModal(); },
