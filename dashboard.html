@@ -1534,10 +1534,8 @@ function dashOverview(){
   const total = del.length + ong.length + inp.length + ide.length;
   const delCost = sum(del,'Cost (OMR)'), ongCost = sum(ong,'Cost (OMR)'), invest = delCost + ongCost;
   const cancelled = D.ongoing.filter(r => stageGroup(r) === 'cancelled').length;
-  const vgs = vendorGroups(), vNames = new Set(vgs.map(g => nk(g.name)));
-  const extraStartups = new Set(D.startups.map(s => nk(s['Startup Name'])).filter(k => k && !vNames.has(k))).size;
-  const startupCount = vgs.filter(g => /startup/i.test(g.type)).length + extraStartups;
-  const activeVendors = vNames.size + extraStartups;
+  const vgs = vendorGroups(), startupCount = vgs.filter(g => /startup/i.test(g.type)).length;
+  const activeVendors = vgs.length;
   const openDec = D.decision.filter(d => !/decided|closed|done/i.test(d.Status||''));
   const kp = kpis([
     { label:'Total use cases', value:fmtInt(total), sub: cancelled ? `${cancelled} cancelled not counted` : 'All stages', tab:'delivered' },
@@ -1547,7 +1545,7 @@ function dashOverview(){
   ]) + kpis([
     { label:'Investment', omr:true, value:fmtOMR(invest), sub:'Delivered and ongoing use cases', tab:'delivered' },
     { label:'Decisions waiting', value:fmtInt(openDec.length), sub: openDec.length ? `${openDec.filter(d=>/high/i.test(d.Priority||'')).length} high priority` : 'Nothing waiting', tab:'decision' },
-    { label:'Active vendors', value:fmtInt(activeVendors), sub:`${activeVendors - startupCount} companies · ${startupCount} startups`, tab:'vendors' },
+    { label:'Vendors', value:fmtInt(activeVendors), sub:`${activeVendors - startupCount} companies · ${startupCount} startups`, tab:'vendors' },
     { label:'Live AI agents', value:fmtInt(D.agents.filter(a=>/live/i.test(a.Status||'')).length), sub:`${D.products.filter(p=>/live|active/i.test(p.Status||'')).length} AI products live`, tab:'agents' },
   ]);
 
@@ -1997,9 +1995,8 @@ function dashDelivered(){
     { label:'Business units', value:fmtInt(uniq(rows,'Unit').length) },
     { label:'Vendors engaged', value:fmtInt(uniq(rows,'Vendor').length) },
   ]) + manageTable('delivered', 'Delivered AI Use Cases', 'Completed use cases from the Delivered sheet.', 'Add Delivered')
-  + (rows.length ? `<div class="grid3">
+  + (rows.length ? `<div class="grid2">
     ${panel('By AI type','Count of delivered use cases.', catBar(rows,'AI Type',{ color:c }))}
-    ${panel('By complexity','', catBar(rows,'Complexity Level',{ color:c }))}
     ${panel('Delivered per year','', years.length ? chartBox(barH(4), el => barChart(el, { labels:years, datasets:[{ label:'Delivered', data:years.map(y=>rows.filter(r=>String(r.Year).trim()===String(y).trim()).length), backgroundColor:c }] })) : '<div class="empty">No years recorded.</div>')}
   </div>
   ${panel('Cost by unit','Delivered cost in OMR.', catBar(rows,'Unit',{ color:c, valueCol:'Cost (OMR)', fmtFn:fmtShortOMR }))}` : '');
