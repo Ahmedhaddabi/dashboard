@@ -1534,7 +1534,7 @@ function dashOverview(){
   const total = del.length + ong.length + inp.length + ide.length;
   const delCost = sum(del,'Cost (OMR)');
   const cancelled = D.ongoing.filter(r => stageGroup(r) === 'cancelled').length;
-  const vgs = vendorGroups(), startupCount = vgs.filter(g => /startup/i.test(g.type)).length;
+  const vgs = vendorGroups(), startupCount = vgs.filter(g => [g.type, ...g.cats].some(v => /start[\s-]*ups?\b/i.test(v))).length;
   const activeVendors = vgs.length;
   const openDec = D.decision.filter(d => !/decided|closed|done/i.test(d.Status||''));
   const kp = kpis([
@@ -1545,8 +1545,8 @@ function dashOverview(){
   ]) + kpis([
     { label:'Investment', omr:true, value:fmtOMR(delCost), sub:'Delivered use cases', tab:'delivered' },
     { label:'Decisions waiting', value:fmtInt(openDec.length), sub: openDec.length ? `${openDec.filter(d=>/high/i.test(d.Priority||'')).length} high priority` : 'Nothing waiting', tab:'decision' },
-    { label:'Vendors', value:fmtInt(activeVendors), sub:`${activeVendors - startupCount} companies · ${startupCount} startups`, tab:'vendors' },
-    { label:'Live AI agents', value:fmtInt(D.agents.filter(a=>/live/i.test(a.Status||'')).length), sub:`${D.products.filter(p=>/live|active/i.test(p.Status||'')).length} AI products live`, tab:'agents' },
+    { label:'Vendors', value:fmtInt(activeVendors), sub:`${activeVendors - startupCount} vendors · ${startupCount} start-ups`, tab:'vendors' },
+    { label:'Live AI agents', value:fmtInt(D.agents.filter(a=>/live/i.test(a.Status||'')).length), tab:'agents' },
   ]);
 
   // by unit, stacked by stage
