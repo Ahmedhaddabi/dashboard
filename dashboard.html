@@ -1532,7 +1532,7 @@ function dashOverview(){
   const D = S.data, stages = STAGE();
   const del = D.delivered, ong = stageRows('ongoing'), inp = stageRows('inprogress'), ide = D.ideation;
   const total = del.length + ong.length + inp.length + ide.length;
-  const delCost = sum(del,'Cost (OMR)'), ongCost = sum(ong,'Cost (OMR)'), invest = delCost + ongCost;
+  const delCost = sum(del,'Cost (OMR)');
   const cancelled = D.ongoing.filter(r => stageGroup(r) === 'cancelled').length;
   const vgs = vendorGroups(), startupCount = vgs.filter(g => /startup/i.test(g.type)).length;
   const activeVendors = vgs.length;
@@ -1543,7 +1543,7 @@ function dashOverview(){
     { label:'Ongoing', value:fmtInt(ong.length), dot:stages[1].c, sub:'AI use cases underway', tab:'ongoing' },
     { label:'Ideation', value:fmtInt(ide.length), dot:stages[2].c, sub:`OMR ${fmtShortOMR(sum(ide,'Est. Cost (OMR)'))} estimated`, tab:'ideation' },
   ]) + kpis([
-    { label:'Investment', omr:true, value:fmtOMR(invest), sub:'Delivered and ongoing use cases', tab:'delivered' },
+    { label:'Investment', omr:true, value:fmtOMR(delCost), sub:'Delivered use cases', tab:'delivered' },
     { label:'Decisions waiting', value:fmtInt(openDec.length), sub: openDec.length ? `${openDec.filter(d=>/high/i.test(d.Priority||'')).length} high priority` : 'Nothing waiting', tab:'decision' },
     { label:'Vendors', value:fmtInt(activeVendors), sub:`${activeVendors - startupCount} companies · ${startupCount} startups`, tab:'vendors' },
     { label:'Live AI agents', value:fmtInt(D.agents.filter(a=>/live/i.test(a.Status||'')).length), sub:`${D.products.filter(p=>/live|active/i.test(p.Status||'')).length} AI products live`, tab:'agents' },
@@ -1571,10 +1571,10 @@ function dashOverview(){
   <div class="grid2">${panel('Use cases by unit','Delivered use cases by business unit. Select a bar to list them.', unitChart)}${panel('Y2Y comparison','Delivered, ongoing and ideation by year.', yoy)}</div>
   ${annualFinancePanel()}
   <div class="grid2">
-    ${investPanel()}
-    ${perfPanel()}
     ${rankPanel('roi')}
     ${rankPanel('util')}
+    ${investPanel()}
+    ${perfPanel()}
   </div>
   ${attentionPanel(items)}
   ${panel('Decisions awaiting leadership', openDec.length ? 'Sorted by due date.' : '', decList + (openDec.length ? `<button class="btn sm" data-act="dash-tab" data-k="decision" style="justify-self:start">View all decisions</button>` : ''))}`;
@@ -1716,18 +1716,18 @@ function investMatrix(){
     return `<button class="exec-row" data-act="segment" data-u="" data-t="${esc(g.key)}" data-ul="All units" data-tl="${esc(g.label)}"><span class="exec-label">${esc(g.label)}<small>${pl(g.n, 'use case')}</small></span><span class="exec-track"><i style="width:${value/max*100}%"></i></span><span class="exec-amount">${fmtOMR(value)}<small>${(value/total*100).toFixed(1)}% of investment</small></span></button>`;
   }).join('')}</div>`);
 }
-/* Investment (Delivered + Ongoing cost) by business unit or AI type, in one compact panel. */
+/* Investment (Delivered cost) by business unit or AI type, in one compact panel. */
 function investPanel(){
-  const by = S.investBy === 'type' ? 'type' : 'unit', rows = investRows();
+  const by = S.investBy === 'type' ? 'type' : 'unit', rows = investRows().filter(x => x.stage === 'delivered');
   const seg = `<div class="seg sm" role="group" aria-label="Group by"><button data-act="invest-by" data-v="unit" aria-pressed="${by === 'unit'}">By unit</button><button data-act="invest-by" data-v="type" aria-pressed="${by === 'type'}">By AI type</button></div>`;
-  const wrap = body => `<section class="panel" id="invest-panel"><div class="panel-head"><div><h2>Investment by unit and AI type</h2><p class="sub">Delivered and ongoing use cases · OMR. Select a row to list them.</p></div>${seg}</div>${body}</section>`;
+  const wrap = body => `<section class="panel" id="invest-panel"><div class="panel-head"><div><h2>Investment by unit and AI type</h2><p class="sub">Delivered use cases · OMR. Select a row to list them.</p></div>${seg}</div>${body}</section>`;
   if (!rows.length) return wrap('<div class="empty">No investment recorded.</div>');
   const groups = groupInvest(rows, by === 'unit' ? 'Unit' : 'AI Type');
   const total = groups.reduce((v, g) => v + g.delivered + g.ongoing, 0), max = Math.max(...groups.map(g => g.delivered + g.ongoing), 1);
   const sav = new Map();
   if (by === 'unit'){ const idx = unitIndex(); deliveredRoi().forEach(r => { const u = idx.get(nk(r['Use Case'])), v = num(r['Annual Savings (OMR)']); if (u && v > 0) sav.set(groupKey(u), (sav.get(groupKey(u)) || 0) + v); }); }
   return wrap(`<div class="inv-list">${groups.map(g => { const value = g.delivered + g.ongoing, s = sav.get(g.key);
-    const act = by === 'unit' ? `data-act="open-unit" data-v="${esc(g.label)}"` : `data-act="segment" data-u="" data-t="${esc(g.key)}" data-ul="All units" data-tl="${esc(g.label)}"`;
+    const act = by === 'unit' ? `data-act="open-unit" data-v="${esc(g.label)}" data-d="1"` : `data-act="segment" data-u="" data-t="${esc(g.key)}" data-ul="All units" data-tl="${esc(g.label)}"`;
     return `<button class="inv-row" ${act}><span class="inv-label">${esc(g.label)}<small>${pl(g.n, 'use case')}${s ? ` · OMR ${fmtShortOMR(s)} savings/yr` : ''}</small></span><span class="exec-track"><i style="width:${value / max * 100}%"></i></span><span class="inv-amount num">${fmtOMR(value)}<small>${total ? (value / total * 100).toFixed(1) : 0}%</small></span></button>`; }).join('')}</div>`);
 }
 function annualFinancePanel(){
@@ -1822,7 +1822,7 @@ function openList(title, sub, items){
     <div class="modal-head"><div style="min-width:0"><h2 id="mt" style="font-size:18px">${esc(title)}</h2>${sub ? `<p class="sub" style="font-size:13px">${esc(sub)}</p>` : ''}</div><span class="spacer"></span><button class="icon-btn" data-act="close-modal" aria-label="Close">${ICON.close}</button></div>
     <div class="modal-body">
       <div class="ls-sum"><div><span>Use cases</span><b class="num">${items.length}</b><small>${counts.map(c => `<em><i style="background:${c.c}"></i>${c.n} ${c.l.toLowerCase()}</em>`).join('')}</small></div>
-        <div><span>Investment</span><b class="num">OMR ${fmtShortOMR(committed)}</b><small>Delivered and ongoing</small></div>
+        <div><span>Investment</span><b class="num">OMR ${fmtShortOMR(committed)}</b><small>${items.some(i => i.stage === 'ongoing') ? 'Delivered and ongoing' : 'Delivered'}</small></div>
         <div><span>Annual savings</span><b class="num">OMR ${fmtShortOMR(sumOf('sav'))}</b><small>Delivered, money</small></div>
         <div><span>Hours saved / year</span><b class="num">${fmtHours(sumOf('hours'))}</b><small>Delivered, time</small></div></div>
       ${items.length ? `<div class="table-wrap"><table><thead><tr><th>Use case</th><th>Stage</th><th>AI type</th><th class="r">Investment</th><th class="r">Savings / yr</th><th class="r">Hours / yr</th></tr></thead>
@@ -1833,7 +1833,7 @@ function openList(title, sub, items){
     <div class="modal-foot"><button class="btn primary sm" data-act="close-modal">Close</button></div></div></div>`;
 }
 function openUnit(label, deliveredOnly){ const k = groupKey(label); openList(`${label === 'Not set' ? 'No unit' : label}`, deliveredOnly ? 'Delivered use cases of this business unit.' : 'All use cases of this business unit.', useCases().filter(u => (deliveredOnly ? u.stage === 'delivered' : u.stage !== 'cancelled') && groupKey(u.unit) === k)); }
-function openSegment(uk, tk, ul, tl){ openList(`${ul} · ${tl}`, 'Delivered and ongoing use cases of this unit and AI type.', useCases().filter(u => (u.stage === 'delivered' || u.stage === 'ongoing') && (!uk || groupKey(u.unit) === uk) && groupKey(u.aiType) === tk)); }
+function openSegment(uk, tk, ul, tl){ openList(`${ul} · ${tl}`, 'Delivered use cases of this AI type.', useCases().filter(u => u.stage === 'delivered' && (!uk || groupKey(u.unit) === uk) && groupKey(u.aiType) === tk)); }
 
 /* ---- executive helpers ---- */
 const pl = (n, w, ws) => `${n} ${n === 1 ? w : (ws || w + 's')}`;
@@ -1994,18 +1994,16 @@ function dashDelivered(){
     { label:'Investment', omr:true, value:fmtOMR(sum(rows,'Cost (OMR)')) },
     { label:'Business units', value:fmtInt(uniq(rows,'Unit').length) },
     { label:'Vendors engaged', value:fmtInt(uniq(rows,'Vendor').length) },
-  ]) + manageTable('delivered', 'Delivered AI Use Cases', 'Completed use cases from the Delivered sheet.', 'Add Delivered')
-  + (rows.length ? `<div class="grid2">
+  ]) + (rows.length ? `<div class="grid2">
     ${panel('By AI type','Count of delivered use cases.', catBar(rows,'AI Type',{ color:c }))}
     ${panel('Delivered per year','', years.length ? chartBox(barH(4), el => barChart(el, { labels:years, datasets:[{ label:'Delivered', data:years.map(y=>rows.filter(r=>String(r.Year).trim()===String(y).trim()).length), backgroundColor:c }] })) : '<div class="empty">No years recorded.</div>')}
   </div>
-  ${panel('Cost by unit','Delivered cost in OMR.', catBar(rows,'Unit',{ color:c, valueCol:'Cost (OMR)', fmtFn:fmtShortOMR }))}` : '');
+  ${panel('Cost by unit','Delivered cost in OMR.', catBar(rows,'Unit',{ color:c, valueCol:'Cost (OMR)', fmtFn:fmtShortOMR }))}` : '')
+  + manageTable('delivered', 'Delivered AI Use Cases', 'Completed use cases from the Delivered sheet.', 'Add Delivered');
 }
 
 function dashOngoing(tab){
   const inp = tab === 'inprogress', rows = stageRows(tab), c = tv(inp ? '--c-inp' : '--c-ong');
-  const oec = countBy(rows,'OEC Approval Status','Not set');
-  const toneColor = s => ({ good:tv('--good'), warn:tv('--warn'), crit:tv('--crit') }[tone(s)] || tv('--muted'));
   const cancelled = S.data.ongoing.filter(r => stageGroup(r) === 'cancelled').length;
   const tiles = inp ? [
     { label:'Ongoing', value:fmtInt(rows.length), dot:c, sub:'Not committed yet, can still be cancelled' },
@@ -2019,13 +2017,10 @@ function dashOngoing(tab){
     { label:'Over approved budget', value:fmtInt(rows.filter(r => num(r['Budget Approved (OMR)']) > 0 && num(r['Cost (OMR)']) > num(r['Budget Approved (OMR)'])).length) },
   ];
   return kpis(tiles)
+  + (rows.length ? panel('By unit', 'Count of ongoing use cases.', catBar(rows,'Unit',{ color:c })) : '')
   + manageTable('ongoing', inp ? 'Ongoing AI Use Cases' : 'Ongoing AI Use Cases',
       inp ? 'Use cases in the Ongoing sheet that are not committed yet: waiting for OEC approval, on hold or cancelled. Set the Stage column to move a use case between tabs.' : 'Use cases underway, from the Ongoing sheet. On hold and cancelled records are excluded from the count.',
-      inp ? 'Add Ongoing' : 'Add Ongoing')
-  + (rows.length ? `<div class="grid2">
-    ${panel('OEC approval status','Status colors: approved, pending, rejected.', chartBox(barH(oec.length), el => barChart(el, { horizontal:true, labels:oec.map(o=>o[0]), datasets:[{ label:'Use cases', data:oec.map(o=>o[1]), backgroundColor:oec.map(o=>toneColor(o[0])) }] })))}
-    ${panel('By unit', inp ? 'Count of ongoing use cases.' : 'Count of ongoing use cases.', catBar(rows,'Unit',{ color:c }))}
-  </div>` : '');
+      inp ? 'Add Ongoing' : 'Add Ongoing');
 }
 
 function dashIdeation(){
@@ -2036,12 +2031,8 @@ function dashIdeation(){
     { label:'Estimated cost', omr:true, value:fmtOMR(sum(rows,'Est. Cost (OMR)')) },
     { label:'High expected impact', value:fmtInt(rows.filter(r=>/high/i.test(r['Expected Impact']||'')).length) },
     { label:'Units proposing', value:fmtInt(uniq(rows,'Unit').length) },
-  ]) + manageTable('ideation', 'Ideation Pipeline', 'Proposed AI initiatives from the Ideation sheet.', 'Add Ideation')
-  + (rows.length ? `<div class="grid3">
-    ${panel('Expected impact','', catBar(rows,'Expected Impact',{ color:c }))}
-    ${panel('By AI type','', catBar(rows,'AI Type',{ color:c }))}
-    ${panel('Ideas by unit','Number of ideas per business unit.', catBar(rows,'Unit',{ color:c }))}
-  </div>` : '');
+  ]) + (rows.length ? panel('Ideas by unit','Number of ideas per business unit.', catBar(rows,'Unit',{ color:c })) : '')
+  + manageTable('ideation', 'Ideation Pipeline', 'Proposed AI initiatives from the Ideation sheet.', 'Add Ideation');
 }
 
 /* Evaluation: use cases taken from Ideation; approved ones move to Ongoing, then Delivered. */
@@ -2053,11 +2044,7 @@ function dashEvaluation(){
     { label:'Estimated cost', omr:true, value:fmtOMR(sum(rows,'Est. Cost (OMR)')) },
     { label:'Approved for Ongoing', value:fmtInt(rows.filter(r=>/^approved/i.test(r['Evaluation Status']||'')).length) },
     { label:'Units', value:fmtInt(uniq(rows,'Unit').length) },
-  ]) + manageTable('evaluation', 'Use Cases in Evaluation', 'Use cases that came from Ideation. After evaluation they move to Ongoing, then Delivered.', 'Add Evaluation')
-  + (rows.length ? `<div class="grid2">
-    ${panel('Evaluation status','', catBar(rows,'Evaluation Status',{ color:c }))}
-    ${panel('By unit','', catBar(rows,'Unit',{ color:c }))}
-  </div>` : '');
+  ]) + manageTable('evaluation', 'Use Cases in Evaluation', 'Use cases that came from Ideation. After evaluation they move to Ongoing, then Delivered.', 'Add Evaluation');
 }
 
 /* Dashboard record panel: row count, Add, Export, Clear all with inline confirm. */
@@ -2107,7 +2094,6 @@ function manageTable(key, title, sub, addLabel){
 function dashUtilization(){
   const rows = S.data.utilization;
   const rated = rows.map(r => ({ r, p:utilRate(r) })).filter(x=>!isNaN(x.p)).sort((a,b)=>b.p-a.p);
-  const col = p => p >= 75 ? tv('--good') : p >= 50 ? tv('--warn') : tv('--crit');
   const active = rows.filter(r => num(r['Active Users']) > 0 || utilRate(r) > 0).length;
   const avgU = avg(rated.map(x => x.p));
   return kpis([
@@ -2116,10 +2102,7 @@ function dashUtilization(){
     { label:'Monthly Usage', value:fmtInt(sum(rows,'Monthly Usage')), icon:'bars' },
     { label:'Average Utilization', value: isNaN(avgU) ? '—' : Math.round(avgU) + '%', icon:'bars' },
     { label:'Active Use Cases', value:fmtInt(active), icon:'check', tone:'good' },
-  ]) + (rated.length ? panel('Utilization by use case', 'Green 75% and above, amber 50–74%, red below 50%.',
-      `<div class="legend"><span><i style="background:${tv('--good')}"></i>75%+</span><span><i style="background:${tv('--warn')}"></i>50–74%</span><span><i style="background:${tv('--crit')}"></i>Below 50%</span></div>` +
-      chartBox(barH(rated.length), el => barChart(el, { horizontal:true, labels:rated.map(x=>x.r['Use Case']), fmt:v=>Math.round(v)+'%', datasets:[{ label:'Utilization', data:rated.map(x=>+x.p.toFixed(1)), backgroundColor:rated.map(x=>col(x.p)) }] }))) : '')
-  + manageTable('utilization', 'Utilization Details', 'Adoption and usage rows from the Utilization sheet.', 'Add Utilization');
+  ]) + manageTable('utilization', 'Utilization Details', 'Adoption and usage rows from the Utilization sheet.', 'Add Utilization');
 }
 
 function paybackMonths(r){
@@ -2129,18 +2112,12 @@ function paybackMonths(r){
 }
 function dashROI(){
   const rows = deliveredRoi(), all = S.data.roi, f = finance();
-  const rs = rows.map(r => ({ r, v:roiVal(r) })).filter(x=>!isNaN(x.v)).sort((a,b)=>b.v-a.v);
-  const hs = rows.map(r => ({ r, h:num(r['Annual Savings (Hours)']) })).filter(x => x.h > 0).sort((a, b) => b.h - a.h);
   return kpis([
     { label:'Annual savings (OMR)', value:'OMR ' + fmtOMR(f.sav), sub:`${pl(f.moneyN, 'delivered use case')} report money` },
     { label:'Hours saved per year', value:fmtHours(f.hours), sub:`${pl(f.timeN, 'delivered use case')} report time` },
     { label:'Portfolio ROI', value:fmtPct1(f.portfolio), sub:'Net annual benefit ÷ investment' },
     { label:'Payback', value: isNaN(f.payback) ? '—' : f.payback.toFixed(1) + ' months', sub:'Investment ÷ net annual benefit' },
-  ]) + manageTable('roi', 'ROI Details', `All rows from the ROI sheet. Only the ${rows.length} rows that match a delivered use case count in the figures above.`, 'Add ROI')
-  + (rows.length ? `<div class="grid2">
-    ${panel('ROI by use case','ROI % of delivered use cases that report money.', rs.length ? chartBox(barH(rs.length), el => barChart(el, { horizontal:true, labels:rs.map(x=>x.r['Use Case']), fmt:v=>Math.round(v)+'%', datasets:[{ label:'ROI', data:rs.map(x=>+x.v.toFixed(1)), backgroundColor:tv('--accent') }], onClick:i => openProfile(rs[i].r['Use Case']) })) : '<div class="empty">No ROI % values.</div>')}
-    ${panel('Hours saved by use case','Annual hours saved by delivered use cases that report time.', hs.length ? chartBox(barH(hs.length), el => barChart(el, { horizontal:true, labels:hs.map(x=>x.r['Use Case']), fmt:fmtHours, datasets:[{ label:'Hours saved', data:hs.map(x=>x.h), backgroundColor:tv('--c-del') }], onClick:i => openProfile(hs[i].r['Use Case']) })) : '<div class="empty">No hours recorded. Fill Annual Savings (Hours) in the ROI sheet.</div>')}
-  </div>` : '');
+  ]) + manageTable('roi', 'ROI Details', `All rows from the ROI sheet. Only the ${rows.length} rows that match a delivered use case count in the figures above.`, 'Add ROI');
 }
 
 function cardGrid(rows, key, render){ return `<div class="cards">${rows.map(r => `<div class="card" data-act="detail" data-k="${key}" data-id="${r._id}" style="cursor:pointer">${render(r)}</div>`).join('')}</div>`; }
@@ -2227,7 +2204,7 @@ function dashVendors(){
     { label:'Unique Vendors', value:fmtInt(gs.length), icon:'bars' },
     { label:'Vendor Use Cases', value:fmtInt(sum(rows,'Use Cases')), icon:'check', tone:'good' },
     { label:'Vendor Value (OMR)', value:'OMR ' + fmtOMR(sum(rows,'Value (OMR)')), icon:'users', tone:'exec' },
-  ]) + companyTypePanel(gs) + `<section class="panel">${manageHead('vendors', 'Vendors', 'One row per vendor with its contracts, use cases, and total value combined. Select a vendor to edit its contracts.', 'Add Vendors')}
+  ]) + `<section class="panel">${manageHead('vendors', 'Vendors', 'One row per vendor with its contracts, use cases, and total value combined. Select a vendor to edit its contracts.', 'Add Vendors')}
     <div class="filter-row"><div class="search">${ICON.search}<input type="search" data-msearch="vendors" id="msearch-vendors" placeholder="Search vendors…" value="${esc(S.dashQuery.vendors || '')}" aria-label="Search vendors"></div>
       <select id="vendor-status" aria-label="Filter by status"><option value="">All Status</option>${statuses.map(([k, l]) => `<option value="${esc(k)}" ${S.vendorStatus === k ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></div>
     <div id="mq-vendors">${vendorTable()}</div></section>`;
@@ -2289,7 +2266,7 @@ const actions = {
     if (r && ['delivered','ongoing','ideation','roi','utilization'].includes(k)){ S.listCtx = null; openProfile(r[BY_KEY[k].id]); } else openDetail(k, t.dataset.id); },
   profile(t){ if (!t.closest('.modal')) S.listCtx = null; openProfile(t.dataset.v); },
   'list-back'(){ const c = S.listCtx; if (!c) return closeModal(); const set = new Set(c.names.map(nk)); openList(c.title, c.sub, useCases().filter(u => set.has(u.key))); },
-  'open-unit'(t){ openUnit(t.dataset.v); },
+  'open-unit'(t){ openUnit(t.dataset.v, t.dataset.d === '1'); },
   segment(t){ openSegment(t.dataset.u, t.dataset.t, t.dataset.ul, t.dataset.tl); },
   'invest-by'(t){ S.investBy = t.dataset.v; const el = document.getElementById('invest-panel'); if (el) el.outerHTML = investPanel(); },
   'perf-edit'(){ S.perfEdit = true; const el = document.getElementById('perf-panel'); if (el){ el.outerHTML = perfPanel(); const i = document.querySelector('#perf-panel .perf-input'); if (i) i.focus(); } },
