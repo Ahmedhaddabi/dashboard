@@ -71,7 +71,6 @@ p{margin:0}
 .brand-text{min-width:0}
 .brand-meta{display:flex;align-items:center;gap:8px;color:var(--fg-2);font-size:13px}
 .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);border-radius:999px;padding:1px 9px;font-size:11.5px;font-weight:600;color:var(--fg-2);background:var(--surface);white-space:nowrap}
-.chip.sample{border-color:transparent;background:var(--exec-soft);color:var(--exec-ink)}
 .brand-title{font-size:19px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .spacer{flex:1}
 .view-switch{display:flex;gap:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px}
@@ -97,8 +96,6 @@ main{max-width:1280px;margin:0 auto;padding-inline:24px;padding-block:24px 64px;
 .notice strong{display:block;font-weight:600}
 .notice p{color:var(--fg-2);font-size:13.5px}
 .notice .actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
-.notice.sample{background:var(--exec-soft);border-color:transparent}
-.notice.sample p,.notice.sample svg{color:var(--exec-ink)}
 .eyebrow{display:inline-block;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--exec-soft);color:var(--exec-ink)}
 .hero{display:grid;gap:10px}
 .hero h1{font-size:clamp(26px,3.4vw,40px);font-weight:800;letter-spacing:-.025em;line-height:1.1}
@@ -496,6 +493,62 @@ table.editable td.actions,table.editable thead th:last-child{z-index:3}
 .pf-bar i{background:color-mix(in srgb,var(--c-del) 28%,var(--surface))}
 .pf-bar b{background:var(--c-del)}
 .pf-none{color:var(--muted);font-size:13px}
+.pf-card.value{border-color:color-mix(in srgb,var(--accent) 24%,var(--line));background:color-mix(in srgb,var(--accent-soft) 40%,var(--surface));gap:12px;margin-bottom:12px}
+.pf-card.value h3 .pill{text-transform:none;letter-spacing:0;font-weight:600}
+.pf-story{margin:0;font-size:14.5px;color:var(--fg);max-width:80ch}
+.pf-story b{font-weight:700}
+.pf-cmp-wrap{min-width:0}
+@media (max-width:560px){ .pf-cmp th,.pf-cmp td{white-space:normal;padding:6px 4px} .pf-cmp thead th{font-size:10.5px;letter-spacing:.03em} }
+.pf-cmp{width:100%;border-collapse:collapse;font-size:13px}
+.pf-cmp th,.pf-cmp td{padding:7px 8px;border-top:1px solid var(--line);text-align:right;white-space:nowrap}
+.pf-cmp thead th{border-top:0;padding-top:0;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pf-cmp th[scope=row]{text-align:left;font-weight:500;color:var(--muted);white-space:normal;padding-left:0}
+.pf-cmp td.ai{font-weight:600}
+.pf-cmp td.d{font-weight:700}
+.pf-cmp td.d small{font-weight:500;color:var(--muted)}
+.pf-cmp td.good{color:var(--good)} .pf-cmp td.crit{color:var(--crit)} .pf-cmp td.cost{color:var(--muted)}
+.pf-cmp tr.tot th,.pf-cmp tr.tot td{border-top:1.5px solid var(--line-strong);font-weight:700;color:var(--fg)}
+.pf-cmp tr.tot td.good{color:var(--good)} .pf-cmp tr.tot td.crit{color:var(--crit)}
+.pf-payback{display:grid;gap:6px;font-size:13px;color:var(--fg-2);border-top:1px solid var(--line);padding-top:10px}
+.pf-payback p{margin:0}
+.pf-payback b{color:var(--fg)}
+.pf-warn{margin:0;font-size:13px;color:var(--warn)}
+.roi-ctl{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.roi-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted)}
+.roi-legend span{display:inline-flex;align-items:center;gap:6px}
+.roi-legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.roi-legend i.good,.roi-track i.good{background:var(--good)} .roi-legend i.warn,.roi-track i.warn{background:var(--warn)} .roi-legend i.crit,.roi-track i.crit{background:var(--crit)}
+.roi-track{position:relative;height:10px}
+.roi-track em{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--fg);opacity:.45}
+.roi-row .inv-amount.good{color:var(--good)} .roi-row .inv-amount.warn{color:var(--warn)} .roi-row .inv-amount.crit{color:var(--crit)}
+.roi-row .inv-amount small{color:var(--muted)}
+.roi-matrix th,.roi-matrix td{white-space:nowrap}
+.roi-matrix thead th.r{text-align:right}
+.roi-matrix tbody th{text-align:left;font-weight:600}
+.rm-cell{box-shadow:inset 0 0 0 2px var(--surface);text-align:right;font-family:var(--font-num);font-weight:700;font-size:14px;cursor:pointer;border-radius:6px}
+.rm-cell small{display:block;font-family:var(--font);font-size:11px;font-weight:500;color:var(--muted)}
+.rm-cell.good{background:var(--good-soft);color:var(--good)} .rm-cell.warn{background:var(--warn-soft);color:var(--warn)} .rm-cell.crit{background:var(--crit-soft);color:var(--crit)}
+.rm-cell.none{color:var(--muted);font-weight:500}
+.rm-cell[role=button]:hover,.rm-cell[role=button]:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.roi-matrix tr.tot th,.roi-matrix tr.tot td{border-top:1.5px solid var(--line-strong)}
+.pf-card.docs h3 .chip{text-transform:none;letter-spacing:0}
+.doc-list{display:grid;gap:8px}
+.doc-slot{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0;transition:border-color .15s,background .15s}
+.doc-slot.empty{border-style:dashed;background:var(--surface-2)}
+.doc-slot.over{border-color:var(--accent);background:var(--accent-soft)}
+.doc-ico{flex:none;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+.doc-slot.empty .doc-ico{background:var(--neutral-soft);color:var(--muted)}
+.doc-ico svg{width:17px;height:17px}
+.doc-main{display:grid;gap:1px;min-width:0;flex:1}
+.doc-main b{font-size:13.5px;font-weight:650}
+.doc-main span{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc-acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.doc-view{border:1px solid var(--line);border-radius:10px;overflow:hidden;display:grid}
+.doc-view-head{display:flex;align-items:center;gap:8px;padding:6px 6px 6px 12px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600;background:var(--surface-2)}
+.doc-view-head span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc-view iframe{width:100%;height:min(70vh,640px);border:0;background:#fff}
+.doc-view img{max-width:100%;display:block;margin:0 auto}
+@media (max-width:560px){ .doc-slot{flex-wrap:wrap} .doc-acts{width:100%;justify-content:flex-start} }
 .pf-facts{border-top:1px solid var(--line);padding-top:14px;margin:0}
 .ls-sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .ls-sum > div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;gap:2px;min-width:0}
@@ -547,6 +600,7 @@ table.editable td.actions,table.editable thead th:last-child{z-index:3}
 <div id="modal-root"></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="file-input" accept=".xlsx,.xlsm,.xls" hidden>
+<input type="file" id="doc-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg" hidden>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -743,146 +797,8 @@ function buildWorkbook(data, keys, headersOnly){
 if (typeof module !== 'undefined') module.exports = { SCHEMA, parseWorkbook, buildWorkbook, num, pctVal };
 </script>
 
-<script id="sample">
-/* Sample records: fictional, shown until a real workbook is imported. */
-function sampleData(){
-  const U = { C:'Consumer', T:'Technology & Infrastructure', F:'Finance', B:'Business', S:'Strategy & Innovation', G:'GRC', P:'People', D:'Digital & Applications' };
-  const focal = { C:'Maryam Al Balushi', T:'Khalid Al Rawahi', F:'Aisha Al Hinai', B:'Yousuf Al Kindi', S:'Ahmed Al Haddabi', G:'Salma Al Lawati', P:'Fatma Al Zadjali', D:'Hamed Al Maskari' };
-  const endUser = { C:'Customer care', T:'Network operations', F:'Finance operations', B:'Enterprise sales', S:'Strategy office', G:'Risk & compliance', P:'HR', D:'IT service desk' };
-  const desc = t => `${t} for Omantel ${'operations'}`;
-  const d = [
-    ['Prepaid churn prediction','C','Mar',2025,'Nizwa Analytics',42000,'Medium','High','Machine Learning','Churn propensity model'],
-    ['Ticket auto-triage','T','May',2025,'Falaj AI',28500,'Low','Medium','NLP','Ticket classifier'],
-    ['Invoice processing OCR','F','Jun',2025,'Muscat Automation Co.',31000,'Medium','High','Computer Vision','Document AI with RPA'],
-    ['HR policy assistant','P','Jul',2025,'Falaj AI',18000,'Low','Medium','Generative AI','RAG assistant'],
-    ['Network anomaly detection','T','Aug',2025,'Gulf Cognitive Systems',96000,'High','High','Machine Learning','Time-series anomaly detection'],
-    ['Arabic voice bot for care','C','Sep',2025,'Sohar Data Labs',120000,'High','High','Generative AI','Voice agent'],
-    ['Contract clause extraction','G','Oct',2025,'Falaj AI',22000,'Medium','Medium','Generative AI','LLM extraction'],
-    ['Next best offer engine','C','Nov',2025,'Nizwa Analytics',74000,'High','High','Machine Learning','Recommender'],
-    ['Procurement spend classifier','F','Dec',2025,'Muscat Automation Co.',15500,'Low','Medium','Machine Learning','Text classification'],
-    ['Meeting minutes summarizer','S','Dec',2024,'Falaj AI',6500,'Low','Low','Generative AI','Summarization'],
-    ['Site energy optimization','T','Nov',2024,'Gulf Cognitive Systems',58000,'High','High','Machine Learning','Optimization model'],
-    ['B2B lead scoring','B','Feb',2026,'Nizwa Analytics',24000,'Medium','Medium','Machine Learning','Scoring model'],
-    ['Payment reconciliation bot','F','Mar',2026,'Muscat Automation Co.',19500,'Low','Medium','RPA + AI','Reconciliation bot'],
-    ['Customer sentiment analytics','C','Apr',2026,'Sohar Data Labs',36000,'Medium','High','NLP','Sentiment analysis'],
-    ['IT service desk agent','D','May',2026,'Falaj AI',41000,'Medium','High','Agentic AI','Service desk agent'],
-    ['Regulatory report generator','G','Jun',2026,'Qurum Tech',27000,'Medium','Medium','Generative AI','Report drafting'],
-  ].map(r => ({ 'Use Case Title':r[0], 'Description':`${r[9]} supporting ${endUser[r[1]].toLowerCase()}.`, 'Unit':U[r[1]], 'Month':r[2], 'Year':String(r[3]), 'End User':endUser[r[1]], 'Focal Point':focal[r[1]], 'Vendor':r[4], 'Cost (OMR)':String(r[5]), 'Complexity Level':r[6], 'Impact/Value':r[7], 'AI Type':r[8], 'AI Solution':r[9] }));
-  const o = [
-    ['Fiber cut prediction','T','Jan',2026,'Gulf Cognitive Systems',88000,'High','High','Machine Learning','Failure prediction','Approved',88000],
-    ['Roaming revenue assurance','F','Feb',2026,'Nizwa Analytics',64000,'High','High','Machine Learning','Leakage detection','Approved',60000],
-    ['Omantel app chat agent','C','Feb',2026,'Sohar Data Labs',145000,'High','High','Agentic AI','Customer agent','Approved',145000],
-    ['SIM box fraud detection','G','Mar',2026,'Qurum Tech',72000,'High','High','Machine Learning','Fraud graph model','Pending',''],
-    ['RAN KPI forecasting','T','Mar',2026,'Gulf Cognitive Systems',51000,'Medium','High','Machine Learning','Forecasting','Approved',51000],
-    ['Enterprise email classification','B','Apr',2026,'Falaj AI',23000,'Low','Medium','NLP','Email router','Approved',23000],
-    ['Capacity planning forecaster','T','Apr',2026,'Dhofar Digital',47000,'Medium','Medium','Machine Learning','Demand forecasting','Pending',''],
-    ['Cybersecurity alert triage','G','May',2026,'Qurum Tech',69000,'High','High','Agentic AI','SOC copilot','Approved',65000],
-    ['Marketing content generator','C','May',2026,'Falaj AI',21000,'Low','Medium','Generative AI','Content studio','Approved',21000],
-    ['Sales proposal drafter','B','Jun',2026,'Falaj AI',26000,'Medium','Medium','Generative AI','Proposal copilot','Pending',''],
-    ['Bill shock prediction','C','Jun',2026,'Nizwa Analytics',33000,'Medium','Medium','Machine Learning','Usage alerting','Approved',33000],
-    ['Spare parts demand forecast','T','Jun',2026,'Dhofar Digital',38000,'Medium','Medium','Machine Learning','Inventory forecasting','Not Submitted',''],
-    ['Legal translator AR/EN','G','Jul',2026,'Sohar Data Labs',17000,'Low','Medium','Generative AI','Translation','Approved',17000],
-    ['Board pack summarizer','S','Jul',2026,'Falaj AI',9500,'Low','Medium','Generative AI','Summarization','Approved',9500],
-    ['Smart KYC document check','C','Jul',2026,'Muscat Automation Co.',54000,'Medium','High','Computer Vision','ID verification','Pending',''],
-    ['Network config compliance','T','Aug',2026,'Qurum Tech',46000,'Medium','High','Agentic AI','Config auditor','Rejected',''],
-    ['Field workforce scheduling','T','Aug',2026,'Dhofar Digital',79000,'High','High','Machine Learning','Scheduling optimizer','Approved',75000],
-    ['Collections risk scoring','F','Aug',2026,'Nizwa Analytics',29000,'Medium','Medium','Machine Learning','Risk scoring','Approved',29000],
-    ['Drone site inspection','T','Sep',2026,'Ras Al Hadd Robotics',112000,'High','High','Computer Vision','Defect detection','Pending',''],
-    ['Employee attrition predictor','P','Sep',2026,'Nizwa Analytics',19000,'Medium','Medium','Machine Learning','Attrition model','Not Submitted',''],
-  ].map(r => ({ 'Use Case Title':r[0], 'Description':`${r[9]} for ${endUser[r[1]].toLowerCase()}.`, 'Unit':U[r[1]], 'Month':r[2], 'Year':String(r[3]), 'End User':endUser[r[1]], 'Focal Point':focal[r[1]], 'Vendor':r[4], 'Cost (OMR)':String(r[5]), 'Complexity Level':r[6], 'Impact/Value':r[7], 'AI Type':r[8], 'AI Solution':r[9], 'OEC Approval Status':r[10], 'Budget Approved (OMR)':String(r[11]),
-    'Stage': r[0] === 'Spare parts demand forecast' ? 'On hold' : r[0] === 'Network config compliance' ? 'Cancelled' : '' }));
-  const i = [
-    ['Store queue predictor','C','Jul',2026,'Retail stores',14000,'Low','Machine Learning','Footfall forecasting','Medium'],
-    ['Tower lease contract analytics','F','Jul',2026,'Real estate team',22000,'Medium','Generative AI','Contract analytics','Medium'],
-    ['Traffic steering optimization','T','Aug',2026,'RAN engineering',95000,'High','Machine Learning','Reinforcement learning optimizer','High'],
-    ['Device financing risk model','F','Aug',2026,'Credit control',31000,'Medium','Machine Learning','Credit scoring','High'],
-    ['GRC risk register assistant','G','Aug',2026,'Risk office',12000,'Low','Generative AI','Risk copilot','Medium'],
-    ['Complaint root-cause mining','C','Sep',2026,'Customer experience',27000,'Medium','NLP','Topic mining','High'],
-    ['CV screening assistant','P','Sep',2026,'Talent acquisition',9000,'Low','Generative AI','Screening copilot','Low'],
-    ['Dealer commission reconciliation','B','Sep',2026,'Channel sales',16000,'Low','RPA + AI','Reconciliation bot','Medium'],
-    ['Data quality monitor','D','Oct',2026,'Data office',24000,'Medium','Machine Learning','Data quality anomaly checks','Medium'],
-    ['Executive strategy copilot','S','Oct',2026,'Leadership office',48000,'High','Agentic AI','Strategy agent','High'],
-  ].map(r => ({ 'Use Case Title':r[0], 'Description':`${r[8]} for ${r[4].toLowerCase()}.`, 'Unit':U[r[1]], 'Month':r[2], 'Year':String(r[3]), 'End User':r[4], 'Focal Point':focal[r[1]], 'Est. Cost (OMR)':String(r[5]), 'Complexity Level':r[6], 'AI Type':r[7], 'AI Solution':r[8], 'Expected Impact':r[9] }));
-  const dec = [
-    ['Approve phase 2 of the Omantel app chat agent','Extend the agent to postpaid and B2B journeys.','C','AI CoE','CEO Office','2026-10-20','210000','High','Open'],
-    ['Select vendor for drone site inspection','Two vendors shortlisted after the proof of concept.','T','AI CoE','CTO','2026-10-30','112000','High','In review'],
-    ['Customer data policy for GenAI tools','Approve which data classes can be used in GenAI tools.','G','Legal & GRC','Chief Risk Officer','2026-11-15','','Medium','Open'],
-    ['Scale the IT service desk agent to group entities','Roll out to two subsidiaries in Q1 2027.','D','AI CoE','CIO','2026-12-01','38000','Low','Open'],
-  ].map(r => ({ 'Decision Item':r[0], 'Description':r[1], 'Unit':U[r[2]], 'Requested By':r[3], 'Decision Owner':r[4], 'Due Date':r[5], 'Value at Stake (OMR)':r[6], 'Priority':r[7], 'Status':r[8] }));
-  const ut = [
-    ['HR policy assistant','P',2800,1960,3000,2140,'6,400 queries','70%','Up'],
-    ['Ticket auto-triage','T',120,112,15000,13900,'13,900 tickets','93%','Up'],
-    ['Invoice processing OCR','F',35,29,4000,3300,'3,300 invoices','83%','Flat'],
-    ['Arabic voice bot for care','C',60000,41000,90000,61000,'61,000 calls','68%','Up'],
-    ['Meeting minutes summarizer','S',400,140,1200,420,'420 meetings','35%','Down'],
-    ['Customer sentiment analytics','C',60,27,500,225,'225 reports','',  'Flat'],
-    ['IT service desk agent','D',3200,1850,5000,2900,'2,900 chats','58%','Up'],
-    ['Payment reconciliation bot','F',12,11,20000,18400,'18,400 payments','0.92','Flat'],
-  ].map(r => ({ 'Use Case':r[0], 'Unit':U[r[1]], 'Total Target Users':String(r[2]), 'Active Users':String(r[3]), 'Capacity Value':String(r[4]), 'Actual Value':String(r[5]), 'Monthly Usage':r[6], 'Utilization Rate':r[7], 'Trend':r[8] }));
-  /* name, investment, running cost, savings OMR, hours without AI, hours saved, FTE, ROI %, payback (yrs), status, value type */
-  const roi = [
-    ['Ticket auto-triage',28500,4000,61000,12000,7800,3,'200%',0.5,'Realized','Cost saving'],
-    ['Invoice processing OCR',31000,5000,72000,9600,6900,4,'216%',0.46,'Realized','Cost saving'],
-    ['Network anomaly detection',96000,18000,210000,'','',2,'200%',0.5,'Realized','Risk reduction'],
-    ['Arabic voice bot for care',120000,30000,260000,'','',12,'192%',0.52,'Realized','Customer experience'],
-    ['HR policy assistant',18000,3500,26000,8000,4500,1,'125%',0.8,'Realized','Cost saving'],
-    ['Site energy optimization',58000,6000,140000,'','',0,'231%',0.43,'Realized','Cost saving'],
-    ['Next best offer engine',74000,12000,115000,'','',1,'139%',0.72,'Ongoing','Revenue uplift'],
-    ['Meeting minutes summarizer',6500,1200,'',4800,3100,'','','','Realized','Productivity'],
-    ['Contract clause extraction',22000,3000,'',6000,3600,2,'','','Realized','Productivity'],
-    ['Procurement spend classifier',15500,1500,'',2400,1700,1,'','','Realized','Productivity'],
-    ['Omantel app chat agent',145000,36000,240000,'','',15,'141%',0.71,'Projected','Customer experience'],
-  ].map(r => ({ 'Use Case':r[0], 'Investment (OMR)':String(r[1]), 'Annual Operating Cost':String(r[2]), 'Annual Savings (OMR)':String(r[3]), 'Without AI (Hours)':String(r[4]), 'Annual Savings (Hours)':String(r[5]),
-    'FTE':String(r[6]), 'ROI %':r[7], 'Payback Period (years)':String(r[8]), 'Status':r[9], 'Value Type':r[10] }));
-  const pr = [
-    ['AI Studio','Platform','Internal GenAI workspace with approved models and prompt library.','Live'],
-    ['Care Voice Agent','Customer care','Arabic and English voice agent for the 1234 care line.','Live'],
-    ['DocFlow','Automation','Document AI pipeline for invoices, contracts and KYC files.','Live'],
-    ['Network Insight','Analytics','Anomaly and forecasting suite for RAN and transport KPIs.','Pilot'],
-    ['Enterprise Copilot','Business','Assistant for B2B account managers and proposal teams.','Pilot'],
-    ['Smart KYC','Security & identity','ID verification and liveness checks for onboarding.','In development'],
-  ].map(r => ({ 'Product Name':r[0], 'Category':r[1], 'Description':r[2], 'Status':r[3] }));
-  const st = [
-    ['Lughat AI','Arabic speech recognition and NLP.','Language AI','Maryam Al Balushi',2,137000,'Commercial',64000,'Active'],
-    ['Sabla Labs','Agent orchestration and evaluation tooling.','Agentic AI','Hamed Al Maskari',1,41000,'Pilot',12000,'Active'],
-    ['Mizan Risk','Credit and collections risk models.','Fintech','Aisha Al Hinai',1,31000,'PoC',7500,'Active'],
-    ['Wadi Vision','Drone imagery analytics for site audits.','Computer vision','Khalid Al Rawahi',1,112000,'PoC',18000,'Negotiation'],
-    ['Bayan Data','Synthetic data for model testing.','Data','Ahmed Al Haddabi',0,0,'Framework',0,'Expired'],
-  ].map(r => ({ 'Startup Name':r[0], 'Description':r[1], 'Sector':r[2], 'Focal Point':r[3], 'Use Cases Count':String(r[4]), 'Use Cases Value (OMR)':String(r[5]), 'Contract Type':r[6], 'Contract Value (OMR)':String(r[7]), 'Contract Status':r[8] }));
-  const ve = [
-    ['CT-2024-011','Gulf Cognitive Systems','International company','ML engineering',4,293000,'2024-09-01','2027-08-31','Huda Al Rawas','Active'],
-    ['CT-2025-004','Nizwa Analytics','Local company','Data science',6,284000,'2025-01-15','2027-01-14','Saif Al Abri','Active'],
-    ['CT-2025-009','Falaj AI','Startup','GenAI development',9,211000,'2025-03-01','2026-12-31','Noor Al Siyabi','Active'],
-    ['CT-2025-013','Muscat Automation Co.','Local company','RPA & document AI',4,120000,'2025-04-01','2026-11-30','Badr Al Shukaili','Active'],
-    ['CT-2025-021','Sohar Data Labs','Startup','Conversational AI',3,298000,'2025-06-01','2027-05-31','Reem Al Farsi','Active'],
-    ['CT-2025-030','Qurum Tech','International company','Security & compliance AI',4,214000,'2025-09-01','2026-10-31','Majid Al Busaidi','Active'],
-    ['CT-2026-002','Dhofar Digital','Local company','Forecasting & optimization',3,164000,'2026-02-01','2027-01-31','Laila Al Mahri','Active'],
-    ['','Ras Al Hadd Robotics','Startup','Drones & vision',1,112000,'','','Talal Al Amri','Pending'],
-  ].map(r => ({ 'Contract ID':r[0], 'Company':r[1], 'Type':r[2], 'Category':r[3], 'Use Cases':String(r[4]), 'Value (OMR)':String(r[5]), 'Start Date':r[6], 'End Date':r[7], 'Contact':r[8], 'Status':r[9] }));
-  const ev = [
-    ['Network fault root-cause assistant','T','Aug',2026,'Network operations',36000,'Medium','Agentic AI','Fault analysis agent','Business case'],
-    ['Retail shelf availability check','C','Aug',2026,'Retail stores',28000,'Medium','Computer Vision','Shelf image analytics','Feasibility study'],
-    ['Supplier invoice dispute bot','F','Sep',2026,'Finance operations',14000,'Low','RPA + AI','Dispute handling bot','Approved for Ongoing'],
-    ['Learning path recommender','P','Sep',2026,'HR',11000,'Low','Machine Learning','Course recommender','Feasibility study'],
-    ['Policy compliance checker','G','Oct',2026,'Risk & compliance',19000,'Medium','Generative AI','Policy review copilot','Rejected'],
-  ].map(r => ({ 'Use Case Title':r[0], 'Description':`${r[8]} for ${r[4].toLowerCase()}.`, 'Unit':U[r[1]], 'Month':r[2], 'Year':String(r[3]), 'End User':r[4], 'Focal Point':focal[r[1]], 'Est. Cost (OMR)':String(r[5]), 'Complexity Level':r[6], 'AI Type':r[7], 'AI Solution':r[8], 'Evaluation Status':r[9] }));
-  const ag = [
-    ['Care Voice Agent','Consumer','38% faster call handling','Live',''],
-    ['Service Desk Agent','Digital & Applications','1,200 tickets resolved per month','Live',''],
-    ['Finance Recon Agent','Finance','92% of payments auto-matched','Live',''],
-    ['SOC Triage Agent','GRC','60% of alerts auto-closed','Pilot','Pilot with two analyst shifts'],
-    ['Proposal Drafting Agent','Business','4 hours saved per proposal','Development',''],
-    ['Config Audit Agent','Technology & Infrastructure','','Paused','Waiting for OEC re-approval'],
-  ].map(r => ({ 'Agent Name':r[0], 'Owner':r[1], 'Productivity':r[2], 'Status':r[3], 'Remarks':r[4] }));
-  const out = { delivered:d, ongoing:o, ideation:i, evaluation:ev, decision:dec, utilization:ut, roi, products:pr, startups:st, vendors:ve, agents:ag };
-  for (const k in out) out[k] = out[k].map(r => { const c = {}; for (const [kk,v] of Object.entries(r)) if (v !== '' && v !== undefined) c[kk] = v; c._id = uid(); return c; });
-  return out;
-}
-</script>
-
 <script>
 /* ---------- App state ---------- */
-const LOAD_SAMPLE_ON_START = true;
 const PAGE_SIZE = 25;
 const S = {
   data: emptyData(), source: 'empty', fileName: '',
@@ -892,7 +808,6 @@ const S = {
   rank: { roi:'high', util:'high' }, rankMeasure: 'money', investBy: 'unit', perfEdit: false, listCtx: null, loadedAt: new Date(), growthMode: 'count', vendorStatus: '', vendorOpen: null, unitFilter: {},
 };
 function emptyData(){ return Object.fromEntries(SCHEMA.map(s => [s.key, []])); }
-if (LOAD_SAMPLE_ON_START){ S.data = sampleData(); S.source = 'sample'; }
 { const h = location.hash.replace('#',''); if (['dashboard','admin','docs'].includes(h)) S.view = h; }
 
 const dlPromise = (window.claude && typeof window.claude.use === 'function') ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null);
@@ -993,7 +908,9 @@ const ICON = {
 /* ---------- downloads ---------- */
 async function saveWorkbook(wb, filename){
   const out = XLSX.write(wb, { bookType:'xlsx', type:'array' });
-  const blob = new Blob([out], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  return saveBlob(new Blob([out], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), filename);
+}
+async function saveBlob(blob, filename){
   const dl = await dlPromise;
   if (dl){
     try { await dl.save({ filename, data: blob }); toast(`Saved ${filename}`); }
@@ -1008,7 +925,6 @@ const stamp = () => new Date().toISOString().slice(0,10);
 const exportTemplate = () => saveWorkbook(buildWorkbook({}, SCHEMA.map(s=>s.key), true), 'COE_Upload_Template.xlsx');
 const exportSheet = k => saveWorkbook(buildWorkbook(S.data, [k], false), `COE_${BY_KEY[k].name.replace(/\s+/g,'_')}_${stamp()}.xlsx`);
 const exportAll = () => saveWorkbook(buildWorkbook(S.data, SCHEMA.map(s=>s.key), false), `COE_Upload_Template_${stamp()}.xlsx`);
-const exportSample = () => saveWorkbook(buildWorkbook(sampleData(), SCHEMA.map(s=>s.key), false), 'COE_Upload_Template_sample.xlsx');
 
 /* ---------- header ---------- */
 function renderHeader(){
@@ -1018,7 +934,7 @@ function renderHeader(){
       <div class="wordmark" aria-label="Omantel">Oman<i>t</i>el</div>
       <div class="brand-sep"></div>
       <div class="brand-text">
-        <div class="brand-meta">COE Dashboard <span class="chip">MVP Version</span>${S.source==='sample' ? '<span class="chip sample">Sample data</span>' : ''}</div>
+        <div class="brand-meta">COE Dashboard <span class="chip">MVP Version</span></div>
         <div class="brand-title">Executive Insights Hub</div>
       </div>
     </div>
@@ -1060,8 +976,6 @@ function render(){
 }
 
 function sessionNotice(){
-  if (S.source === 'sample') return `<div class="notice sample">${ICON.warn}<div><strong>Showing sample data</strong><p>These records are fictional examples. Upload your COE_Upload_Template workbook in the Admin console to replace them.</p></div>
-    <div class="actions"><button class="btn sm" data-act="go-upload">Upload workbook</button><button class="btn sm ghost" data-act="clear-sample">Start empty</button></div></div>`;
   return `<div class="notice">${ICON.warn}<div><strong>Temporary workbook session</strong><p>Uploaded data is stored only in this browser tab. Refreshing or closing the page clears it, and the workbook must be uploaded again.${S.fileName ? ` Current file: ${esc(S.fileName)}.` : ''}</p></div></div>`;
 }
 
@@ -1323,7 +1237,7 @@ function viewDocs(){
     <h1>How the workbook feeds the dashboard</h1>
     <p>Every number on the C-level dashboard comes from the COE_Upload_Template workbook. Keep one sheet per section and the column names in the first row.</p></section>
   <section class="panel">
-    <div class="panel-head"><div><h2>Workflow</h2></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="export-template">${ICON.download} Export empty template</button><button class="btn" data-act="export-sample">${ICON.download} Download sample workbook</button></div></div>
+    <div class="panel-head"><div><h2>Workflow</h2></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="export-template">${ICON.download} Export empty template</button></div></div>
     <ol class="steps">
       <li>Export the template, or keep using your existing COE_Upload_Template file.</li>
       <li>Fill each sheet. Column order does not matter, and spaces, line breaks and capitals in headers are ignored, so “Cost<br>(OMR)” matches “Cost (OMR)”.</li>
@@ -1544,6 +1458,8 @@ function dashOverview(){
     { label:'Ideation', value:fmtInt(ide.length), dot:stages[2].c, sub:`OMR ${fmtShortOMR(sum(ide,'Est. Cost (OMR)'))} estimated`, tab:'ideation' },
   ]) + kpis([
     { label:'Investment', omr:true, value:fmtOMR(delCost), sub:'Delivered use cases', tab:'delivered' },
+    (f => ({ label:'ROI', value:fmtPct1(f.portfolio), tab:'roi',
+      sub: f.moneyN ? `OMR ${fmtShortOMR(f.net)} net a year · ${pl(f.moneyN, 'delivered use case')}` : 'Delivered use cases' }))(finance()),
     { label:'Decisions waiting', value:fmtInt(openDec.length), sub: openDec.length ? `${openDec.filter(d=>/high/i.test(d.Priority||'')).length} high priority` : 'Nothing waiting', tab:'decision' },
     { label:'Vendors', value:fmtInt(activeVendors), sub:`${activeVendors - startupCount} vendors · ${startupCount} start-ups`, tab:'vendors' },
     { label:'Live AI agents', value:fmtInt(D.agents.filter(a=>/live/i.test(a.Status||'')).length), tab:'agents' },
@@ -1583,10 +1499,10 @@ function dashOverview(){
 /* ---- AI growth trend: cumulative use cases or investment by month ---- */
 function monthKey(r){ const y = parseInt(r.Year, 10); if (isNaN(y)) return null; const m = monthIdx(r.Month); return y * 12 + (m < 0 ? 0 : m); }
 const keyLabel = k => `${MONTHS[k % 12]} ${Math.floor(k / 12)}`;
-/* Monthly overrides typed in with Edit, per measure and year; kept in this browser. */
-function loadGrowth(){ try { const g = JSON.parse(localStorage.getItem('coe-growth') || 'null'); if (g && typeof g === 'object') return g; } catch(e){} return {}; }
-function saveGrowth(){ try { localStorage.setItem('coe-growth', JSON.stringify(S.growthManual)); } catch(e){} }
-S.growthManual = loadGrowth();
+/* Monthly figures typed in with Edit last only for this tab, like uploaded data. Remove any left from older versions. */
+function saveGrowth(){}
+try { localStorage.removeItem('coe-growth'); } catch(e){}
+S.growthManual = {};
 function growthYears(){
   const now = new Date().getFullYear(), ys = [];
   ['delivered','ongoing','ideation'].forEach(k => S.data[k].forEach(r => { const y = parseInt(r.Year, 10); if (!isNaN(y)) ys.push(y); }));
@@ -1766,9 +1682,66 @@ function findUseCase(name){
   const roi = S.data.roi.find(r => nk(r['Use Case']) === k) || null, util = S.data.utilization.find(r => nk(r['Use Case']) === k) || null;
   return (roi || util) ? { key:k, name, sheet:null, stage:null, row:{}, unit:String((util && util.Unit) || ''), aiType:'', inv:NaN, roi, util, sav:NaN, hours:NaN } : null;
 }
+/* ---- use case documents: kept in this browser tab only, like uploaded data ---- */
+const DOC_TYPES = [
+  { k:'canvas', l:'Use Case Canvas', hint:'Problem, users, data and expected value' },
+  { k:'risk', l:'Risk Assessment', hint:'AI risk assessment and its sign-off' },
+  { k:'brd', l:'BRD', hint:'Business requirements document' },
+];
+const DOC_MAX = 50 * 1024 * 1024, DOC_EXT = /\.(pdf|docx?|pptx?|xlsx?|png|jpe?g)$/i;
+S.docs = {}; S.docKey = null; S.docTarget = null; S.docView = null;
+const docsOf = key => S.docs[key] || (S.docs[key] = []);
+const docUrl = d => d.url || (d.url = URL.createObjectURL(d.file));
+const docKind = d => /\.pdf$/i.test(d.name) ? 'pdf' : /^image\//.test(d.mime) ? 'image' : '';
+const fmtSize = n => n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
+function dropDoc(d){ if (d.url) URL.revokeObjectURL(d.url); if (S.docView === d.id) S.docView = null; }
+function clearDocs(){ Object.values(S.docs).flat().forEach(dropDoc); S.docs = {}; }
+function docRow(d, type){
+  const label = type ? type.l : 'Other document';
+  if (!d) return `<div class="doc-slot empty" data-doc-drop="${type.k}"><div class="doc-ico">${ICON.file}</div>
+    <div class="doc-main"><b>${label}</b><span>Not attached · ${type.hint}</span></div>
+    <div class="doc-acts"><button class="btn sm" data-act="doc-attach" data-type="${type.k}">${ICON.upload} Attach</button></div></div>`;
+  const added = d.added.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+  return `<div class="doc-slot"${type ? ` data-doc-drop="${type.k}"` : ''}><div class="doc-ico">${ICON.file}</div>
+    <div class="doc-main"><b>${label}</b><span title="${esc(d.name)}">${esc(d.name)} · ${fmtSize(d.size)} · Added ${added}</span></div>
+    <div class="doc-acts">${docKind(d) ? `<button class="btn sm" data-act="doc-view" data-id="${d.id}">${S.docView === d.id ? 'Hide' : 'View'}</button>` : ''}
+      <button class="btn sm" data-act="doc-download" data-id="${d.id}">${ICON.download} Download</button>
+      ${type ? `<button class="btn sm ghost" data-act="doc-attach" data-type="${type.k}">Replace</button>` : ''}
+      <button class="icon-btn del" data-act="doc-remove" data-id="${d.id}" aria-label="Remove ${esc(d.name)}">${ICON.trash}</button></div></div>`;
+}
+function docsSection(key){
+  const list = docsOf(key), fixed = DOC_TYPES.map(t => [t, list.find(d => d.type === t.k)]), have = fixed.filter(x => x[1]).length;
+  const v = S.docView && list.find(d => d.id === S.docView);
+  const view = v ? `<div class="doc-view"><div class="doc-view-head"><span>${esc(v.name)}</span>
+      <a class="btn sm ghost" href="${docUrl(v)}" target="_blank" rel="noopener">Open in new tab</a>
+      <button class="icon-btn" data-act="doc-view" data-id="${v.id}" aria-label="Close preview">${ICON.close}</button></div>
+      ${docKind(v) === 'pdf' ? `<iframe src="${docUrl(v)}" title="${esc(v.name)}"></iframe>` : `<img src="${docUrl(v)}" alt="${esc(v.name)}">`}</div>` : '';
+  return `<h3>${ICON.file} Documents <span class="chip">${have} of ${DOC_TYPES.length} attached</span></h3>
+    <div class="doc-list">${fixed.map(([t, d]) => docRow(d, t)).join('')}${list.filter(d => d.type === 'other').map(d => docRow(d, null)).join('')}
+      <div class="doc-slot empty" data-doc-drop="other"><div class="doc-ico">${ICON.plus}</div>
+        <div class="doc-main"><b>Other documents</b><span>Designs, approvals, test reports, meeting minutes</span></div>
+        <div class="doc-acts"><button class="btn sm" data-act="doc-attach" data-type="other">${ICON.upload} Attach</button></div></div></div>
+    ${view}<p class="pf-none">Click Attach or drop a file on a row. PDF, Word, PowerPoint, Excel or images, up to 50 MB each. Files stay in this browser tab only and are cleared when it is refreshed or closed.</p>`;
+}
+function refreshDocs(){ const el = $('#pf-docs'); if (el && S.docKey) el.innerHTML = docsSection(S.docKey); }
+function addDocs(files, type){
+  if (!S.docKey || !type || !files || !files.length) return;
+  const list = docsOf(S.docKey), names = [];
+  for (const f of (type === 'other' ? [...files] : [files[0]])){
+    if (!DOC_EXT.test(f.name)){ toast(`${f.name} is not a supported file type`, 'error'); continue; }
+    if (f.size > DOC_MAX){ toast(`${f.name} is larger than 50 MB`, 'error'); continue; }
+    if (type !== 'other'){ const i = list.findIndex(d => d.type === type); if (i >= 0) dropDoc(list.splice(i, 1)[0]); }
+    list.push({ id:'d' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), type, name:f.name, size:f.size, mime:f.type, added:new Date(), file:f, url:null });
+    names.push(f.name);
+  }
+  if (names.length){ refreshDocs(); toast(names.length === 1 ? `Attached ${names[0]}` : `Attached ${names.length} documents`); }
+}
+const findDoc = id => docsOf(S.docKey).find(d => d.id === id);
 function roiOf(r){ const v = roiVal(r); if (!isNaN(v)) return v; const i = num(r['Investment (OMR)']), sv = num(r['Annual Savings (OMR)']), c = num(r['Annual Operating Cost']) || 0; return i > 0 && sv > 0 ? (sv - c) / i * 100 : NaN; }
 function openProfile(name){
   const u = findUseCase(name); if (!u) return;
+  if (S.docKey !== u.key) S.docView = null;
+  S.docKey = u.key;
   const r = u.row, R = u.roi, Ut = u.util, back = S.listCtx;
   const kv = (l, v) => `<div class="pf-kv"><span>${l}</span><b class="num">${v}</b></div>`;
   const money = R && num(R['Annual Savings (OMR)']) > 0 ? (() => { const inv = num(R['Investment (OMR)']), c = num(R['Annual Operating Cost']) || 0, sv = num(R['Annual Savings (OMR)']), net = sv - c, pb = paybackMonths(R);
@@ -1784,6 +1757,50 @@ function openProfile(name){
       return `${isNaN(p) ? '' : `<div class="pf-big num">${Math.round(p)}%<span>utilization</span></div>${meter(p)}`}
         ${kv('Active users', `${fmtInt(num(Ut['Active Users']))} of ${fmtInt(num(Ut['Total Target Users']))}`)}${kv('Monthly usage', esc(Ut['Monthly Usage'] || '—'))}${kv('Capacity / actual', `${fmtInt(num(Ut['Capacity Value']))} / ${fmtInt(num(Ut['Actual Value']))}`)}${kv('Trend', Ut.Trend ? pill(Ut.Trend) : '—')}`; })()
     : `<p class="pf-none">No utilization row for this use case.</p>`;
+  /* Business value: the same work without AI and with AI, and when the investment is earned back. */
+  const value = (() => {
+    if (!R){ const imp = r['Impact/Value'] || r['Expected Impact'];
+      return `${imp ? `<p class="pf-story">Expected impact: <b>${esc(imp)}</b>.</p>` : ''}<p class="pf-none">The before-and-after comparison appears once the ROI sheet has a row for this use case.</p>`; }
+    const w = num(R['Without AI (Hours)']), h = num(R['Annual Savings (Hours)']), fte = num(R.FTE), sv = num(R['Annual Savings (OMR)']),
+      c = num(R['Annual Operating Cost']) || 0, inv = num(R['Investment (OMR)']), proj = /project/i.test(R.Status || '');
+    const hasT = w > 0 && h > 0 && h <= w, hasM = sv > 0, net = hasM ? sv - c : NaN;
+    const one = n => n.toLocaleString('en-US', { maximumFractionDigits:1 }), omr = n => 'OMR ' + fmtOMR(n);
+    const rows = [], story = [];
+    if (hasT) rows.push(['Hours of work a year', fmtHours(w), fmtHours(w - h), `−${fmtHours(h)} <small>· ${Math.round(h / w * 100)}% less</small>`, 'good']);
+    if (fte > 0){ const base = hasT ? fte * w / h : NaN;
+      rows.push([`Staff effort (FTE)${hasT ? ' ' + tip('Without AI is scaled from the FTE released and the share of hours saved.') : ''}`, hasT ? one(base) : '—', hasT ? one(Math.max(base - fte, 0)) : '—', `−${one(fte)} FTE`, 'good']); }
+    if (hasM || c > 0) rows.push(['AI running cost a year', 'OMR 0', omr(c), c > 0 ? '+' + omr(c) : '—', 'cost']);
+    if (hasM){ rows.push(['Savings a year', 'OMR 0', omr(sv), '+' + omr(sv), 'good']);
+      rows.push(['Net value a year', 'OMR 0', omr(net), (net < 0 ? '−' : '+') + omr(Math.abs(net)), net < 0 ? 'crit' : 'good', true]); }
+    const v = (now, later) => proj ? later : now;
+    if (hasT) story.push(`Without AI this work takes <b>${fmtHours(w)} hours</b> a year. With AI it ${v('takes', 'would take')} <b>${fmtHours(w - h)}</b>, ${Math.round(h / w * 100)}% less.`);
+    else if (h > 0) story.push(`AI ${v('saves', 'would save')} <b>${fmtHours(h)} hours</b> a year.`);
+    if (fte > 0) story.push(`${story.length ? 'That' : 'It'} ${v('frees', 'would free')} <b>${one(fte)} FTE</b> for other work.`);
+    if (hasM) story.push(net < 0 ? `Running cost is higher than the savings, so it ${v('loses', 'would lose')} <b>${omr(-net)}</b> a year.`
+      : `${c > 0 ? `After ${omr(c)} running cost, it` : 'It'} ${v('returns', 'would return')} <b>${omr(net)}</b> a year.`);
+    else if (c > 0 && h > 0) story.push(`It costs ${omr(c)} a year to run, about <b>OMR ${(c / h).toFixed(2)}</b> for each hour saved.`);
+    /* Break-even date: go-live month plus the payback period; value so far assumes the full net value each month since go-live. */
+    let payback = '';
+    const live = u.stage === 'delivered' ? monthKey(r) : null, pb = paybackMonths(R);
+    if (!proj && inv > 0 && net > 0 && live !== null && pb > 0){
+      const nowD = new Date(), nowK = nowD.getFullYear() * 12 + nowD.getMonth(), months = Math.max(nowK - live, 0),
+        earned = net * months / 12, pct = Math.min(earned / inv * 100, 100), beK = live + Math.ceil(pb), done = nowK >= beK;
+      payback = `<div class="pf-payback">
+        <p>${done ? `Paid back in <b>${keyLabel(beK)}</b>, ${pl(beK - live, 'month')} after go-live in ${keyLabel(live)}.`
+          : `Expected to pay back in <b>${keyLabel(beK)}</b>, ${pl(beK - nowK, 'month')} from now.`}
+          ${tip(`Counts the full net value of ${omr(net)} a year from go-live in ${keyLabel(live)}.`)}</p>
+        <div class="pf-bar" role="img" aria-label="${Math.round(pct)}% of the investment earned back"><b style="flex:${pct}"></b><i style="flex:${100 - pct}"></i></div>
+        <p>${omr(earned)} earned since go-live against ${omr(inv)} invested${done ? `, <b>${omr(earned - inv)} ahead</b>` : ` (${Math.round(pct)}%)`}.</p></div>`;
+    }
+    const warn = w > 0 && h > w ? `<p class="pf-warn">Hours saved (${fmtHours(h)}) are more than the hours without AI (${fmtHours(w)}). Check the ROI row.</p>` : '';
+    if (!rows.length) return `${warn}<p class="pf-none">The ROI row has no before-and-after figures yet. Add Without AI (Hours) and Annual Savings (Hours), or Annual Savings (OMR).</p>`;
+    return `${proj ? `<p class="pf-warn">These are projected figures, not measured results yet.</p>` : ''}${warn}
+      ${story.length ? `<p class="pf-story">${story.join(' ')}</p>` : ''}
+      <div class="pf-cmp-wrap"><table class="pf-cmp">
+        <thead><tr><th scope="col"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Measure</span></th><th scope="col">Without AI</th><th scope="col">With AI</th><th scope="col">Difference</th></tr></thead>
+        <tbody>${rows.map(([l, a, b, d, cls, tot]) => `<tr${tot ? ' class="tot"' : ''}><th scope="row">${l}</th><td class="num">${a}</td><td class="num ai">${b}</td><td class="num d ${cls}">${d}</td></tr>`).join('')}</tbody>
+      </table></div>${payback}`;
+  })();
   const when = [r.Month, r.Year].filter(Boolean).join(' ');
   const meta = [u.aiType, r['AI Solution'], r.Vendor, when && `${u.stage === 'delivered' ? 'Delivered' : u.stage === 'ideation' ? 'Proposed' : 'Started'} ${when}`].filter(Boolean).map(esc).join(' · ');
   const facts = [['End user', r['End User']], ['Focal point', r['Focal Point']], ['Investment', hasNum(r['Cost (OMR)']) ? 'OMR ' + fmtOMR(num(r['Cost (OMR)'])) : (hasNum(r['Est. Cost (OMR)']) ? 'OMR ' + fmtOMR(num(r['Est. Cost (OMR)'])) + ' estimated' : '')],
@@ -1797,11 +1814,13 @@ function openProfile(name){
       <span class="spacer"></span><button class="icon-btn" data-act="close-modal" aria-label="Close">${ICON.close}</button></div>
     <div class="modal-body">
       ${r.Description ? `<p class="pf-desc">${esc(r.Description)}</p>` : ''}
+      <section class="pf-card value"><h3>${ICON.bars} Business value: without AI vs with AI ${R && R['Value Type'] ? `<span class="pill">${esc(R['Value Type'])}</span>` : ''}${R && R.Status ? pill(R.Status) : ''}</h3>${value}</section>
       <div class="pf-grid">
         <section class="pf-card money"><h3>${ICON.coins} Money</h3>${money}</section>
         <section class="pf-card time"><h3>${ICON.trend} Time</h3>${time}</section>
         <section class="pf-card adopt"><h3>${ICON.users} Adoption</h3>${adoption}</section>
       </div>
+      <section class="pf-card docs" id="pf-docs">${docsSection(u.key)}</section>
       ${facts.length ? `<dl class="detail pf-facts">${facts.map(([l, v]) => `<div class="${l === 'Remarks' ? 'wide' : ''}"><dt>${l}</dt><dd>${l === 'OEC approval' || l === 'ROI status' ? pill(v) : esc(v)}</dd></div>`).join('')}</dl>` : ''}
     </div>
     <div class="modal-foot">${back ? `<button class="btn sm ghost" data-act="list-back" style="margin-right:auto">← ${esc(back.title)}</button>` : ''}
@@ -1892,7 +1911,7 @@ function execSummary(items){
   else if (total) parts.push('All three performance targets are being met.');
   if (crit.length) parts.push(`${b(pl(crit.length, 'critical item'))} need${crit.length === 1 ? 's' : ''} attention, starting with ${esc(crit[0].title.charAt(0).toLowerCase() + crit[0].title.slice(1))}.`);
   if (openDec.length){ const hi = openDec.filter(d => /high/i.test(d.Priority || '')).length; parts.push(`${b(pl(openDec.length, 'decision'))} ${openDec.length === 1 ? 'is' : 'are'} waiting for leadership${hi ? `, ${hi} of them high priority` : ''}.`); }
-  const src = S.source === 'sample' ? 'Sample data' : S.fileName ? esc(S.fileName) : 'Entered in the Admin console';
+  const src = S.fileName ? esc(S.fileName) : 'Entered in the Admin console';
   const when = S.loadedAt.toLocaleString('en-GB', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
   return `<section class="panel summary"><div class="panel-head"><div><h2>Executive summary</h2></div><span class="asof">Data as of ${when} · ${src}</span></div>
     <p class="summary-text">${parts.length ? parts.join(' ') : 'No data loaded yet. Upload the workbook in the Admin console.'}</p></section>`;
@@ -2110,6 +2129,51 @@ function paybackMonths(r){
   const i = num(r['Investment (OMR)']), s = num(r['Annual Savings (OMR)']), c = num(r['Annual Operating Cost']) || 0;
   return (i > 0 && s - c > 0) ? i / (s - c) * 12 : NaN;
 }
+/* ---- ROI by business unit, AI type, or both: delivered use cases, ROI = net annual value ÷ investment ---- */
+const roiTone = p => isNaN(p) ? '' : p < 0 ? 'crit' : p >= S.targets.roi ? 'good' : 'warn';
+function roiGroup(rows, keyOf, labelOf){
+  const m = new Map();
+  rows.forEach(x => { const k = groupKey(keyOf(x)); if (!m.has(k)) m.set(k, { key:k, label:String(labelOf(x) || '').trim() || 'Not set', rows:[] }); m.get(k).rows.push(x.r); });
+  return [...m.values()].map(g => ({ ...g, f:finance(g.rows) }));
+}
+function roiPanel(){
+  const by = ['unit', 'type', 'matrix'].includes(S.roiBy) ? S.roiBy : 'unit', sortNet = S.roiSort === 'net', target = S.targets.roi;
+  const meta = new Map(useCases().filter(u => u.stage === 'delivered').map(u => [u.key, u]));
+  const rows = deliveredRoi().map(r => { const u = meta.get(nk(r['Use Case'])); return { r, unit:u ? u.unit : '', type:u ? u.aiType : '' }; });
+  const seg = (act, cur, opts, label) => `<div class="seg sm" role="group" aria-label="${label}">${opts.map(([v, l]) => `<button data-act="${act}" data-v="${v}" aria-pressed="${cur === v}">${l}</button>`).join('')}</div>`;
+  const head = `<div class="panel-head"><div><h2>ROI by unit and AI type</h2><p class="sub">Delivered use cases that report savings in money · ROI = net annual value ÷ investment · Target ${fmtInt(target)}%. Select a ${by === 'matrix' ? 'cell' : 'row'} to list its use cases.</p></div>
+    <div class="roi-ctl">${seg('roi-by', by, [['unit', 'By unit'], ['type', 'By AI type'], ['matrix', 'Unit × AI type']], 'Group ROI by')}${by === 'matrix' ? '' : seg('roi-sort', sortNet ? 'net' : 'roi', [['roi', 'ROI %'], ['net', 'Net value']], 'Sort by')}</div></div>`;
+  const legend = `<div class="roi-legend"><span><i class="good"></i>At or above target</span><span><i class="warn"></i>Below target</span><span><i class="crit"></i>Losing money</span></div>`;
+  const wrap = body => `<section class="panel" id="roi-panel">${head}${body}</section>`;
+  if (!rows.some(x => num(x.r['Annual Savings (OMR)']) > 0)) return wrap('<div class="empty">No delivered use cases report savings in money yet.</div>');
+  const act = (uk, tk, ul, tl) => tk ? `data-act="segment" data-u="${esc(uk)}" data-t="${esc(tk)}" data-ul="${esc(ul)}" data-tl="${esc(tl)}"` : `data-act="open-unit" data-v="${esc(ul)}" data-d="1"`;
+  const tipOf = (l, f) => `${l}: ROI ${fmtPct1(f.portfolio)}, OMR ${fmtOMR(f.net)} net a year on OMR ${fmtOMR(f.inv)} invested`;
+
+  if (by === 'matrix'){
+    const units = roiGroup(rows, x => x.unit, x => x.unit), types = roiGroup(rows, x => x.type, x => x.type);
+    const order = (a, b) => (b.f.moneyN ? b.f.portfolio : -Infinity) - (a.f.moneyN ? a.f.portfolio : -Infinity);
+    units.sort(order); types.sort(order);
+    const cell = (sub, uk, tk, ul, tl) => { const f = finance(sub);
+      if (!sub.length) return '<td class="rm-cell none">—</td>';
+      if (!f.moneyN) return `<td class="rm-cell none" role="button" tabindex="0" ${act(uk, tk, ul, tl)} title="${esc(`${ul} · ${tl}: no savings in money reported`)}">n/a<small>${pl(sub.length, 'use case')}</small></td>`;
+      return `<td class="rm-cell ${roiTone(f.portfolio)}" role="button" tabindex="0" ${act(uk, tk, ul, tl)} title="${esc(tipOf(`${ul} · ${tl}`, f))}">${fmtInt(f.portfolio)}%<small>${pl(sub.length, 'use case')}</small></td>`; };
+    return wrap(`${legend}<div class="table-wrap"><table class="roi-matrix"><thead><tr><th>Business unit</th>${types.map(t => `<th class="r">${esc(t.label)}</th>`).join('')}<th class="r">All AI types</th></tr></thead><tbody>
+      ${units.map(u => `<tr><th scope="row">${esc(u.label)}</th>${types.map(t => cell(rows.filter(x => groupKey(x.unit) === u.key && groupKey(x.type) === t.key).map(x => x.r), u.key, t.key, u.label, t.label)).join('')}${cell(u.rows, u.key, '', u.label, '')}</tr>`).join('')}
+      <tr class="tot"><th scope="row">All units</th>${types.map(t => cell(t.rows, '', t.key, 'All units', t.label)).join('')}<td class="rm-cell ${roiTone(finance(rows.map(x => x.r)).portfolio)}">${fmtInt(finance(rows.map(x => x.r)).portfolio)}%<small>Portfolio</small></td></tr>
+    </tbody></table></div>`);
+  }
+
+  const groups = by === 'unit' ? roiGroup(rows, x => x.unit, x => x.unit) : roiGroup(rows, x => x.type, x => x.type);
+  const val = g => g.f.moneyN ? (sortNet ? g.f.net : g.f.portfolio) : -Infinity;
+  groups.sort((a, b) => val(b) - val(a));
+  const scale = Math.max(target, ...groups.filter(g => g.f.moneyN).map(g => g.f.portfolio), 1) * 1.08;
+  return wrap(`${legend}<div class="inv-list">${groups.map(g => { const f = g.f, p = f.portfolio, has = f.moneyN > 0;
+    const sub = has ? `${pl(g.rows.length, 'use case')} · OMR ${fmtShortOMR(f.net)} net a year${g.rows.length > f.moneyN ? ` · ${g.rows.length - f.moneyN} without money figures` : ''}` : `${pl(g.rows.length, 'use case')} · No savings in money reported`;
+    return `<button class="inv-row roi-row" ${by === 'unit' ? act('', '', g.label, '') : act('', g.key, 'All units', g.label)} title="${esc(has ? tipOf(g.label, f) : g.label)}">
+      <span class="inv-label">${esc(g.label)}<small>${sub}</small></span>
+      <span class="exec-track roi-track"><i class="${roiTone(p)}" style="width:${has ? Math.max(p, 0) / scale * 100 : 0}%"></i><em style="left:${target / scale * 100}%" aria-hidden="true"></em></span>
+      <span class="inv-amount num ${roiTone(p)}">${has ? fmtPct1(p) : '—'}<small>${has ? `OMR ${fmtShortOMR(f.inv)} invested` : ''}</small></span></button>`; }).join('')}</div>`);
+}
 function dashROI(){
   const rows = deliveredRoi(), all = S.data.roi, f = finance();
   return kpis([
@@ -2117,7 +2181,7 @@ function dashROI(){
     { label:'Hours saved per year', value:fmtHours(f.hours), sub:`${pl(f.timeN, 'delivered use case')} report time` },
     { label:'Portfolio ROI', value:fmtPct1(f.portfolio), sub:'Net annual benefit ÷ investment' },
     { label:'Payback', value: isNaN(f.payback) ? '—' : f.payback.toFixed(1) + ' months', sub:'Investment ÷ net annual benefit' },
-  ]) + manageTable('roi', 'ROI Details', `All rows from the ROI sheet. Only the ${rows.length} rows that match a delivered use case count in the figures above.`, 'Add ROI');
+  ]) + roiPanel() + manageTable('roi', 'ROI Details', `All rows from the ROI sheet. Only the ${rows.length} rows that match a delivered use case count in the figures above.`, 'Add ROI');
 }
 
 function cardGrid(rows, key, render){ return `<div class="cards">${rows.map(r => `<div class="card" data-act="detail" data-k="${key}" data-id="${r._id}" style="cursor:pointer">${render(r)}</div>`).join('')}</div>`; }
@@ -2231,11 +2295,15 @@ function dashAgents(){
 const actions = {
   view(t){ S.view = t.dataset.v; S.menuOpen = false; S.confirm = null; try{ history.replaceState(null,'','#'+S.view); }catch(e){} render(); window.scrollTo({top:0}); },
   menu(){ S.menuOpen = !S.menuOpen; renderHeader(); },
-  signout(){ S.signedOut = true; S.menuOpen = false; S.data = emptyData(); S.source = 'empty'; S.pending = null; render(); },
+  signout(){ S.signedOut = true; S.menuOpen = false; S.data = emptyData(); clearDocs(); S.source = 'empty'; S.pending = null; render(); },
+  'doc-attach'(t){ S.docTarget = t.dataset.type; const inp = $('#doc-input'); inp.multiple = S.docTarget === 'other'; inp.click(); },
+  'doc-view'(t){ S.docView = S.docView === t.dataset.id ? null : t.dataset.id; refreshDocs(); },
+  'doc-download'(t){ const d = findDoc(t.dataset.id); if (d) saveBlob(d.file, d.name); },
+  'doc-remove'(t){ const list = docsOf(S.docKey), i = list.findIndex(d => d.id === t.dataset.id); if (i < 0) return;
+    const d = list.splice(i, 1)[0]; dropDoc(d); refreshDocs(); toast(`Removed ${d.name}`); },
   signin(){ S.signedOut = false; S.view = 'admin'; S.adminTab = 'upload'; render(); },
   'admin-tab'(t){ S.adminTab = t.dataset.v; S.confirm = null; render(); },
   'go-upload'(){ S.view = 'admin'; S.adminTab = 'upload'; render(); window.scrollTo({top:0}); },
-  'clear-sample'(){ S.data = emptyData(); S.source = 'empty'; toast('Sample data cleared'); render(); },
   'open-sheet'(t){ S.adminTab = 'records'; S.recSheet = t.dataset.k; S.recQuery = ''; S.recPage = 1; render(); },
   'rec-sheet'(t){ S.recSheet = t.dataset.k; S.recQuery = ''; S.recPage = 1; S.confirm = null; render(); },
   page(t){ S.recPage += +t.dataset.v; refreshRecTable(); },
@@ -2247,7 +2315,7 @@ const actions = {
   'ask-delete'(t){ S.confirm = { type:'row', id:t.dataset.id }; refreshAfterConfirm(); },
   'do-delete'(t){ const k = t.dataset.k || S.recSheet; S.data[k] = S.data[k].filter(r=>r._id!==t.dataset.id); S.confirm = null; toast('Record deleted'); render(); if (S.vendorOpen) openVendor(S.vendorOpen); },
   'ask-clear'(t){ S.confirm = { type:t.dataset.v }; render(); },
-  'do-clear'(t){ if (t.dataset.v === 'all'){ S.data = emptyData(); toast('All tabs cleared'); } else { S.data[S.recSheet] = []; toast(`${BY_KEY[S.recSheet].name} cleared`); } if (S.source==='sample' && t.dataset.v==='all') S.source='empty'; S.confirm = null; render(); },
+  'do-clear'(t){ if (t.dataset.v === 'all'){ S.data = emptyData(); clearDocs(); toast('All tabs cleared'); } else { S.data[S.recSheet] = []; toast(`${BY_KEY[S.recSheet].name} cleared`); } S.confirm = null; render(); },
   'cancel-confirm'(){ const wasRow = S.confirm && S.confirm.type==='row'; S.confirm = null; wasRow ? refreshAfterConfirm() : render(); },
   'ask-dclear'(t){ S.confirm = { type:'dclear', k:t.dataset.k }; render(); },
   'do-dclear'(t){ const k = t.dataset.k; if (stageScoped(k)){ const gone = new Set(scopedRows(k)); S.data[k] = S.data[k].filter(r => !gone.has(r)); } else S.data[k] = []; S.confirm = null; S.dashQuery[k] = ''; toast(`${BY_KEY[k].name} cleared`); render(); },
@@ -2260,7 +2328,6 @@ const actions = {
   'reset-targets'(){ S.targets = { ...DEFAULT_TARGETS }; saveTargets(); render(); toast('Targets reset'); },
   'export-sheet'(t){ exportSheet(t.dataset.k || S.recSheet); },
   'export-all'(){ exportAll(); },
-  'export-sample'(){ exportSample(); },
   'dash-tab'(t){ S.dashTab = t.dataset.k; render(); },
   detail(t){ const k = t.dataset.k, r = (S.data[k] || []).find(x => x._id === t.dataset.id);
     if (r && ['delivered','ongoing','ideation','roi','utilization'].includes(k)){ S.listCtx = null; openProfile(r[BY_KEY[k].id]); } else openDetail(k, t.dataset.id); },
@@ -2268,6 +2335,8 @@ const actions = {
   'list-back'(){ const c = S.listCtx; if (!c) return closeModal(); const set = new Set(c.names.map(nk)); openList(c.title, c.sub, useCases().filter(u => set.has(u.key))); },
   'open-unit'(t){ openUnit(t.dataset.v, t.dataset.d === '1'); },
   segment(t){ openSegment(t.dataset.u, t.dataset.t, t.dataset.ul, t.dataset.tl); },
+  'roi-by'(t){ S.roiBy = t.dataset.v; const el = document.getElementById('roi-panel'); if (el) el.outerHTML = roiPanel(); },
+  'roi-sort'(t){ S.roiSort = t.dataset.v; const el = document.getElementById('roi-panel'); if (el) el.outerHTML = roiPanel(); },
   'invest-by'(t){ S.investBy = t.dataset.v; const el = document.getElementById('invest-panel'); if (el) el.outerHTML = investPanel(); },
   'perf-edit'(){ S.perfEdit = true; const el = document.getElementById('perf-panel'); if (el){ el.outerHTML = perfPanel(); const i = document.querySelector('#perf-panel .perf-input'); if (i) i.focus(); } },
   'perf-done'(){ S.perfEdit = false; render(); toast('Targets saved'); },
@@ -2311,6 +2380,12 @@ $('#file-input').addEventListener('change', e => { handleFile(e.target.files[0])
 document.addEventListener('dragover', e => { const d = e.target.closest && e.target.closest('#drop'); if (d){ e.preventDefault(); d.classList.add('over'); } });
 document.addEventListener('dragleave', e => { const d = e.target.closest && e.target.closest('#drop'); if (d) d.classList.remove('over'); });
 document.addEventListener('drop', e => { const d = e.target.closest && e.target.closest('#drop'); if (d){ e.preventDefault(); d.classList.remove('over'); handleFile(e.dataTransfer.files[0]); } });
+/* use case documents: file picker and drag and drop onto a document row */
+$('#doc-input').addEventListener('change', e => { addDocs(e.target.files, S.docTarget); e.target.value = ''; });
+const docSlot = e => e.target.closest && e.target.closest('[data-doc-drop]');
+document.addEventListener('dragover', e => { const s = docSlot(e); if (s){ e.preventDefault(); s.classList.add('over'); } });
+document.addEventListener('dragleave', e => { const s = docSlot(e); if (s && !s.contains(e.relatedTarget)) s.classList.remove('over'); });
+document.addEventListener('drop', e => { const s = docSlot(e); if (s){ e.preventDefault(); s.classList.remove('over'); addDocs(e.dataTransfer.files, s.dataset.docDrop); } });
 
 /* re-draw charts when the theme changes */
 let themeTimer;
