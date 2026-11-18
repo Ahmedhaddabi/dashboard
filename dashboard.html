@@ -522,15 +522,6 @@ table.editable td.actions,table.editable thead th:last-child{z-index:3}
 .roi-track em{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--fg);opacity:.45}
 .roi-row .inv-amount.good{color:var(--good)} .roi-row .inv-amount.warn{color:var(--warn)} .roi-row .inv-amount.crit{color:var(--crit)}
 .roi-row .inv-amount small{color:var(--muted)}
-.roi-matrix th,.roi-matrix td{white-space:nowrap}
-.roi-matrix thead th.r{text-align:right}
-.roi-matrix tbody th{text-align:left;font-weight:600}
-.rm-cell{box-shadow:inset 0 0 0 2px var(--surface);text-align:right;font-family:var(--font-num);font-weight:700;font-size:14px;cursor:pointer;border-radius:6px}
-.rm-cell small{display:block;font-family:var(--font);font-size:11px;font-weight:500;color:var(--muted)}
-.rm-cell.good{background:var(--good-soft);color:var(--good)} .rm-cell.warn{background:var(--warn-soft);color:var(--warn)} .rm-cell.crit{background:var(--crit-soft);color:var(--crit)}
-.rm-cell.none{color:var(--muted);font-weight:500}
-.rm-cell[role=button]:hover,.rm-cell[role=button]:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-.roi-matrix tr.tot th,.roi-matrix tr.tot td{border-top:1.5px solid var(--line-strong)}
 .pf-card.docs h3 .chip{text-transform:none;letter-spacing:0}
 .doc-list{display:grid;gap:8px}
 .doc-slot{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0;transition:border-color .15s,background .15s}
@@ -1687,6 +1678,7 @@ const DOC_TYPES = [
   { k:'canvas', l:'Use Case Canvas', hint:'Problem, users, data and expected value' },
   { k:'risk', l:'Risk Assessment', hint:'AI risk assessment and its sign-off' },
   { k:'brd', l:'BRD', hint:'Business requirements document' },
+  { k:'tech', l:'Technical Proposal', hint:'Solution design, architecture and vendor approach' },
 ];
 const DOC_MAX = 50 * 1024 * 1024, DOC_EXT = /\.(pdf|docx?|pptx?|xlsx?|png|jpe?g)$/i;
 S.docs = {}; S.docKey = null; S.docTarget = null; S.docView = null;
@@ -2137,31 +2129,17 @@ function roiGroup(rows, keyOf, labelOf){
   return [...m.values()].map(g => ({ ...g, f:finance(g.rows) }));
 }
 function roiPanel(){
-  const by = ['unit', 'type', 'matrix'].includes(S.roiBy) ? S.roiBy : 'unit', sortNet = S.roiSort === 'net', target = S.targets.roi;
+  const by = S.roiBy === 'type' ? 'type' : 'unit', sortNet = S.roiSort === 'net', target = S.targets.roi;
   const meta = new Map(useCases().filter(u => u.stage === 'delivered').map(u => [u.key, u]));
   const rows = deliveredRoi().map(r => { const u = meta.get(nk(r['Use Case'])); return { r, unit:u ? u.unit : '', type:u ? u.aiType : '' }; });
   const seg = (act, cur, opts, label) => `<div class="seg sm" role="group" aria-label="${label}">${opts.map(([v, l]) => `<button data-act="${act}" data-v="${v}" aria-pressed="${cur === v}">${l}</button>`).join('')}</div>`;
-  const head = `<div class="panel-head"><div><h2>ROI by unit and AI type</h2><p class="sub">Delivered use cases that report savings in money · ROI = net annual value ÷ investment · Target ${fmtInt(target)}%. Select a ${by === 'matrix' ? 'cell' : 'row'} to list its use cases.</p></div>
-    <div class="roi-ctl">${seg('roi-by', by, [['unit', 'By unit'], ['type', 'By AI type'], ['matrix', 'Unit × AI type']], 'Group ROI by')}${by === 'matrix' ? '' : seg('roi-sort', sortNet ? 'net' : 'roi', [['roi', 'ROI %'], ['net', 'Net value']], 'Sort by')}</div></div>`;
+  const head = `<div class="panel-head"><div><h2>ROI by unit and AI type</h2><p class="sub">Delivered use cases that report savings in money · ROI = net annual value ÷ investment · Target ${fmtInt(target)}%. Select a row to list its use cases.</p></div>
+    <div class="roi-ctl">${seg('roi-by', by, [['unit', 'By unit'], ['type', 'By AI type']], 'Group ROI by')}${seg('roi-sort', sortNet ? 'net' : 'roi', [['roi', 'ROI %'], ['net', 'Net value']], 'Sort by')}</div></div>`;
   const legend = `<div class="roi-legend"><span><i class="good"></i>At or above target</span><span><i class="warn"></i>Below target</span><span><i class="crit"></i>Losing money</span></div>`;
   const wrap = body => `<section class="panel" id="roi-panel">${head}${body}</section>`;
   if (!rows.some(x => num(x.r['Annual Savings (OMR)']) > 0)) return wrap('<div class="empty">No delivered use cases report savings in money yet.</div>');
   const act = (uk, tk, ul, tl) => tk ? `data-act="segment" data-u="${esc(uk)}" data-t="${esc(tk)}" data-ul="${esc(ul)}" data-tl="${esc(tl)}"` : `data-act="open-unit" data-v="${esc(ul)}" data-d="1"`;
   const tipOf = (l, f) => `${l}: ROI ${fmtPct1(f.portfolio)}, OMR ${fmtOMR(f.net)} net a year on OMR ${fmtOMR(f.inv)} invested`;
-
-  if (by === 'matrix'){
-    const units = roiGroup(rows, x => x.unit, x => x.unit), types = roiGroup(rows, x => x.type, x => x.type);
-    const order = (a, b) => (b.f.moneyN ? b.f.portfolio : -Infinity) - (a.f.moneyN ? a.f.portfolio : -Infinity);
-    units.sort(order); types.sort(order);
-    const cell = (sub, uk, tk, ul, tl) => { const f = finance(sub);
-      if (!sub.length) return '<td class="rm-cell none">—</td>';
-      if (!f.moneyN) return `<td class="rm-cell none" role="button" tabindex="0" ${act(uk, tk, ul, tl)} title="${esc(`${ul} · ${tl}: no savings in money reported`)}">n/a<small>${pl(sub.length, 'use case')}</small></td>`;
-      return `<td class="rm-cell ${roiTone(f.portfolio)}" role="button" tabindex="0" ${act(uk, tk, ul, tl)} title="${esc(tipOf(`${ul} · ${tl}`, f))}">${fmtInt(f.portfolio)}%<small>${pl(sub.length, 'use case')}</small></td>`; };
-    return wrap(`${legend}<div class="table-wrap"><table class="roi-matrix"><thead><tr><th>Business unit</th>${types.map(t => `<th class="r">${esc(t.label)}</th>`).join('')}<th class="r">All AI types</th></tr></thead><tbody>
-      ${units.map(u => `<tr><th scope="row">${esc(u.label)}</th>${types.map(t => cell(rows.filter(x => groupKey(x.unit) === u.key && groupKey(x.type) === t.key).map(x => x.r), u.key, t.key, u.label, t.label)).join('')}${cell(u.rows, u.key, '', u.label, '')}</tr>`).join('')}
-      <tr class="tot"><th scope="row">All units</th>${types.map(t => cell(t.rows, '', t.key, 'All units', t.label)).join('')}<td class="rm-cell ${roiTone(finance(rows.map(x => x.r)).portfolio)}">${fmtInt(finance(rows.map(x => x.r)).portfolio)}%<small>Portfolio</small></td></tr>
-    </tbody></table></div>`);
-  }
 
   const groups = by === 'unit' ? roiGroup(rows, x => x.unit, x => x.unit) : roiGroup(rows, x => x.type, x => x.type);
   const val = g => g.f.moneyN ? (sortNet ? g.f.net : g.f.portfolio) : -Infinity;
