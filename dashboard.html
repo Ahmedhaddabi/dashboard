@@ -957,10 +957,6 @@ function render(){
   chartQueue.forEach(fn => fn());
 }
 
-function sessionNotice(){
-  return `<div class="notice">${ICON.warn}<div><strong>Temporary workbook session</strong><p>Uploaded data is stored only in this browser tab. Refreshing or closing the page clears it, and the workbook must be uploaded again.${S.fileName ? ` Current file: ${esc(S.fileName)}.` : ''}</p></div></div>`;
-}
-
 function viewSignedOut(){
   return `<div class="panel" style="max-width:480px;margin:48px auto;text-align:center;justify-items:center">
     <h2>You are signed out</h2><p class="sub">Session data was cleared from this tab.</p>
@@ -970,8 +966,7 @@ function viewSignedOut(){
 /* ---------- ADMIN ---------- */
 function viewAdmin(){
   const total = SCHEMA.reduce((a,s)=>a+S.data[s.key].length,0);
-  return `${sessionNotice()}
-  <section class="hero"><div><span class="eyebrow">Admin console</span></div>
+  return `<section class="hero"><div><span class="eyebrow">Admin console</span></div>
     <h1>Upload, validate, and review workbook data.</h1>
     <p>The dashboard follows the ${SCHEMA.length}-sheet COE_Upload_Template structure. Data is kept in this browser tab after import; ${fmtInt(total)} records are loaded now.</p></section>
   <div class="toolbar">
@@ -1247,8 +1242,7 @@ function viewDashboard(){
   const t = S.dashTab;
   const body = { overview:dashOverview, decision:dashDecision, delivered:dashDelivered, ongoing:() => dashOngoing('ongoing'), inprogress:() => dashOngoing('inprogress'), evaluation:dashEvaluation, ideation:dashIdeation,
     utilization:dashUtilization, roi:dashROI, products:dashProducts, startups:dashStartups, vendors:dashVendors, agents:dashAgents }[t]();
-  return `${sessionNotice()}
-  <section class="hero"><div><span class="eyebrow">Center of Excellence</span></div>
+  return `<section class="hero"><div><span class="eyebrow">Center of Excellence</span></div>
     <h1>AI performance, value, and decisions</h1>
     <p>Monitor use case progress, value realization, adoption, ecosystem activity, and decision items across Omantel AI initiatives.</p></section>
   <div class="tabs-wrap"><div class="tabs" role="tablist" aria-label="Dashboard sections">${DASH_TABS.map(([k,l]) => `<button role="tab" data-act="dash-tab" data-k="${k}" aria-selected="${k===t}">${l}${COUNT_TABS.has(k) ? ` <span class="count">${stageRows(k).length}</span>` : ''}</button>`).join('')}</div></div>
@@ -1469,10 +1463,10 @@ function dashOverview(){
   <div class="grid2">${panel('Use cases by unit','Delivered use cases by business unit. Select a bar to list them.', unitChart)}${panel('Y2Y comparison','Delivered, ongoing and ideation by year.', yoy)}</div>
   ${annualFinancePanel()}
   <div class="grid2">
-    ${rankPanel('roi')}
-    ${rankPanel('util')}
     ${investPanel()}
     ${perfPanel()}
+    ${rankPanel('roi')}
+    ${rankPanel('util')}
   </div>
   ${attentionPanel(items)}
   ${panel('Decisions awaiting leadership', openDec.length ? 'Sorted by due date.' : '', decList + (openDec.length ? `<button class="btn sm" data-act="dash-tab" data-k="decision" style="justify-self:start">View all decisions</button>` : ''))}`;
