@@ -513,15 +513,6 @@ table.editable td.actions,table.editable thead th:last-child{z-index:3}
 .pf-payback p{margin:0}
 .pf-payback b{color:var(--fg)}
 .pf-warn{margin:0;font-size:13px;color:var(--warn)}
-.roi-ctl{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.roi-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted)}
-.roi-legend span{display:inline-flex;align-items:center;gap:6px}
-.roi-legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
-.roi-legend i.good,.roi-track i.good{background:var(--good)} .roi-legend i.warn,.roi-track i.warn{background:var(--warn)} .roi-legend i.crit,.roi-track i.crit{background:var(--crit)}
-.roi-track{position:relative;height:10px}
-.roi-track em{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--fg);opacity:.45}
-.roi-row .inv-amount.good{color:var(--good)} .roi-row .inv-amount.warn{color:var(--warn)} .roi-row .inv-amount.crit{color:var(--crit)}
-.roi-row .inv-amount small{color:var(--muted)}
 .pf-card.docs h3 .chip{text-transform:none;letter-spacing:0}
 .doc-list{display:grid;gap:8px}
 .doc-slot{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0;transition:border-color .15s,background .15s}
@@ -2121,37 +2112,6 @@ function paybackMonths(r){
   const i = num(r['Investment (OMR)']), s = num(r['Annual Savings (OMR)']), c = num(r['Annual Operating Cost']) || 0;
   return (i > 0 && s - c > 0) ? i / (s - c) * 12 : NaN;
 }
-/* ---- ROI by business unit, AI type, or both: delivered use cases, ROI = net annual value ÷ investment ---- */
-const roiTone = p => isNaN(p) ? '' : p < 0 ? 'crit' : p >= S.targets.roi ? 'good' : 'warn';
-function roiGroup(rows, keyOf, labelOf){
-  const m = new Map();
-  rows.forEach(x => { const k = groupKey(keyOf(x)); if (!m.has(k)) m.set(k, { key:k, label:String(labelOf(x) || '').trim() || 'Not set', rows:[] }); m.get(k).rows.push(x.r); });
-  return [...m.values()].map(g => ({ ...g, f:finance(g.rows) }));
-}
-function roiPanel(){
-  const by = S.roiBy === 'type' ? 'type' : 'unit', sortNet = S.roiSort === 'net', target = S.targets.roi;
-  const meta = new Map(useCases().filter(u => u.stage === 'delivered').map(u => [u.key, u]));
-  const rows = deliveredRoi().map(r => { const u = meta.get(nk(r['Use Case'])); return { r, unit:u ? u.unit : '', type:u ? u.aiType : '' }; });
-  const seg = (act, cur, opts, label) => `<div class="seg sm" role="group" aria-label="${label}">${opts.map(([v, l]) => `<button data-act="${act}" data-v="${v}" aria-pressed="${cur === v}">${l}</button>`).join('')}</div>`;
-  const head = `<div class="panel-head"><div><h2>ROI by unit and AI type</h2><p class="sub">Delivered use cases that report savings in money · ROI = net annual value ÷ investment · Target ${fmtInt(target)}%. Select a row to list its use cases.</p></div>
-    <div class="roi-ctl">${seg('roi-by', by, [['unit', 'By unit'], ['type', 'By AI type']], 'Group ROI by')}${seg('roi-sort', sortNet ? 'net' : 'roi', [['roi', 'ROI %'], ['net', 'Net value']], 'Sort by')}</div></div>`;
-  const legend = `<div class="roi-legend"><span><i class="good"></i>At or above target</span><span><i class="warn"></i>Below target</span><span><i class="crit"></i>Losing money</span></div>`;
-  const wrap = body => `<section class="panel" id="roi-panel">${head}${body}</section>`;
-  if (!rows.some(x => num(x.r['Annual Savings (OMR)']) > 0)) return wrap('<div class="empty">No delivered use cases report savings in money yet.</div>');
-  const act = (uk, tk, ul, tl) => tk ? `data-act="segment" data-u="${esc(uk)}" data-t="${esc(tk)}" data-ul="${esc(ul)}" data-tl="${esc(tl)}"` : `data-act="open-unit" data-v="${esc(ul)}" data-d="1"`;
-  const tipOf = (l, f) => `${l}: ROI ${fmtPct1(f.portfolio)}, OMR ${fmtOMR(f.net)} net a year on OMR ${fmtOMR(f.inv)} invested`;
-
-  const groups = by === 'unit' ? roiGroup(rows, x => x.unit, x => x.unit) : roiGroup(rows, x => x.type, x => x.type);
-  const val = g => g.f.moneyN ? (sortNet ? g.f.net : g.f.portfolio) : -Infinity;
-  groups.sort((a, b) => val(b) - val(a));
-  const scale = Math.max(target, ...groups.filter(g => g.f.moneyN).map(g => g.f.portfolio), 1) * 1.08;
-  return wrap(`${legend}<div class="inv-list">${groups.map(g => { const f = g.f, p = f.portfolio, has = f.moneyN > 0;
-    const sub = has ? `${pl(g.rows.length, 'use case')} · OMR ${fmtShortOMR(f.net)} net a year${g.rows.length > f.moneyN ? ` · ${g.rows.length - f.moneyN} without money figures` : ''}` : `${pl(g.rows.length, 'use case')} · No savings in money reported`;
-    return `<button class="inv-row roi-row" ${by === 'unit' ? act('', '', g.label, '') : act('', g.key, 'All units', g.label)} title="${esc(has ? tipOf(g.label, f) : g.label)}">
-      <span class="inv-label">${esc(g.label)}<small>${sub}</small></span>
-      <span class="exec-track roi-track"><i class="${roiTone(p)}" style="width:${has ? Math.max(p, 0) / scale * 100 : 0}%"></i><em style="left:${target / scale * 100}%" aria-hidden="true"></em></span>
-      <span class="inv-amount num ${roiTone(p)}">${has ? fmtPct1(p) : '—'}<small>${has ? `OMR ${fmtShortOMR(f.inv)} invested` : ''}</small></span></button>`; }).join('')}</div>`);
-}
 function dashROI(){
   const rows = deliveredRoi(), all = S.data.roi, f = finance();
   return kpis([
@@ -2159,7 +2119,7 @@ function dashROI(){
     { label:'Hours saved per year', value:fmtHours(f.hours), sub:`${pl(f.timeN, 'delivered use case')} report time` },
     { label:'Portfolio ROI', value:fmtPct1(f.portfolio), sub:'Net annual benefit ÷ investment' },
     { label:'Payback', value: isNaN(f.payback) ? '—' : f.payback.toFixed(1) + ' months', sub:'Investment ÷ net annual benefit' },
-  ]) + roiPanel() + manageTable('roi', 'ROI Details', `All rows from the ROI sheet. Only the ${rows.length} rows that match a delivered use case count in the figures above.`, 'Add ROI');
+  ]) + manageTable('roi', 'ROI Details', `All rows from the ROI sheet. Only the ${rows.length} rows that match a delivered use case count in the figures above.`, 'Add ROI');
 }
 
 function cardGrid(rows, key, render){ return `<div class="cards">${rows.map(r => `<div class="card" data-act="detail" data-k="${key}" data-id="${r._id}" style="cursor:pointer">${render(r)}</div>`).join('')}</div>`; }
@@ -2313,8 +2273,6 @@ const actions = {
   'list-back'(){ const c = S.listCtx; if (!c) return closeModal(); const set = new Set(c.names.map(nk)); openList(c.title, c.sub, useCases().filter(u => set.has(u.key))); },
   'open-unit'(t){ openUnit(t.dataset.v, t.dataset.d === '1'); },
   segment(t){ openSegment(t.dataset.u, t.dataset.t, t.dataset.ul, t.dataset.tl); },
-  'roi-by'(t){ S.roiBy = t.dataset.v; const el = document.getElementById('roi-panel'); if (el) el.outerHTML = roiPanel(); },
-  'roi-sort'(t){ S.roiSort = t.dataset.v; const el = document.getElementById('roi-panel'); if (el) el.outerHTML = roiPanel(); },
   'invest-by'(t){ S.investBy = t.dataset.v; const el = document.getElementById('invest-panel'); if (el) el.outerHTML = investPanel(); },
   'perf-edit'(){ S.perfEdit = true; const el = document.getElementById('perf-panel'); if (el){ el.outerHTML = perfPanel(); const i = document.querySelector('#perf-panel .perf-input'); if (i) i.focus(); } },
   'perf-done'(){ S.perfEdit = false; render(); toast('Targets saved'); },
